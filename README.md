@@ -1,4 +1,4 @@
-# matlabtools for GelSight
+# gsmatlab
 This project contains MATLAB functions for working with GelSight scans and data. 
 
 ## Getting Started
