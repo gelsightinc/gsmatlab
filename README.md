@@ -23,4 +23,4 @@ Download the package and add the folder to your MATLAB path.
  
  ## License
  
- This project is licensed uner the MIT license - see the [LICENSE.md](LICENSE.md) for details.
+ This project is licensed uner the MIT license - see the [LICENSE](LICENSE) for details.
