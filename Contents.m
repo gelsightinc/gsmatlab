@@ -4,6 +4,9 @@
 % Files
 %   getprofile    - Get a profile from a heightmap
 %   getshape      - Get a shape from an annotations list
+%   gsdemo        - Demo script
+%   levelprofile  - Level a profile
+%   plotshape     - Plot a shape on current axes
 %   readnrm       - Read a normal map in PNG format
 %   readscan      - Read scan.yaml file into struct
 %   readtmd       - Read 3D file in TMD format into array

@@ -25,6 +25,8 @@ function [rpts,A] = levelprofile(pts, rg)
         for i = 1 : size(rg,1)
             regions{i} = rg(i,:);
         end
+    else
+        regions = rg;
     end
 
 
