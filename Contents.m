@@ -1,5 +1,5 @@
-% matlabtools
-% Version 001 18-06-2019
+% gsmatlab
+% Version 1 18-06-2019
 %
 % Files
 %   copyScanFiles - copyScanFiles

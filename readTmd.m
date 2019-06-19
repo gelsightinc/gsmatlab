@@ -1,22 +1,36 @@
-%read_tmd
+function [hm,data] = readtmd(fpath)
+%READTMD Reads a 3D measurement saved in TMD format.
+%	[HM,DATA] = readtmd(FILENAME) reads the 3D surface from the file specified
+%	by the string FILENAME. FILENAME must be in the current directory, in a
+%	directory on the MATLAB path, or include a full or relative path to a file.
 %
+%   The return value HM is an array containing the 3D surface Z values in
+%   millimeters. The return value DATA is a struct with the following fields:
+%   
+%   lengthx   The length of the x-axis in millimeters 
 %
-% -Usage-
-%	[hm,data] = read_tmd(fname)
+%   lengthy   The length of the y-axis in millimeters 
 %
-% -Inputs-
-%	fname
+%   offsetx   The offset of this surface along the x-axis in millimeters with 
+%             respect to the full field of view. This field and offsety are 
+%             set when the 3D algorith is run in a cropped region.
 %
-% -Outputs-
-%	hm
-%	data
+%   offsety   The offset of this surface along the y-axis in millimeters with 
+%             respect to the full field of view. 
 %
-% Last Modified: 1/26/2014
-function [hm,data] = read_tmd(fname)
+%   mmp       The XY spatial resolution in millimeters-per-pixel
+%
+%   See also writeTmd
 
-	fd = fopen(fname,'r'); 
+% Last Modified: 1/26/2014
+
+    if ~exist(fpath,'file')
+        error('cannot find file %s',fpath);
+    end
+
+	fd = fopen(fpath,'r'); 
 	if fd == -1
-		error('read_tmd cannot open %s',fname);
+		error('read_tmd cannot open %s',fpath);
 	end
 
 	header = fread(fd, 32, 'uchar');

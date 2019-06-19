@@ -1,4 +1,11 @@
-function sdata = readscanfile(fpath)
+function sdata = readScanFile(fpath)
+%READSCANFILE  Read the scan.yaml file into a struct
+%
+%   sdata = readScanFile()
+%
+
+% Author: Kimo Johnson, kimo@gelsight.com
+% Last revision: June 18, 2019
 
     if ~exist(fpath,'file')
         error('cannot locate scan file: %s',fpath);

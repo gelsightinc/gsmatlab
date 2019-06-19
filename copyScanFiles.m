@@ -1,12 +1,15 @@
-%copyScanFiles
+function copyScanFiles(spath, basenm, srcfile, tgtfile)
+%COPYSCANFILES  Copy scan.yaml files within scan folders to a different name
 %
-% -Usage -
-%    copyScanFiles(setpath, basenm, srcfile, tgtfile)
+%   copyScanFiles(spath, basenm, srcfile, tgtfile)
 %
 %
-function copyScanFiles(setpath, basenm, srcfile, tgtfile)
+ 
+% Author: Kimo Johnson, kimo@gelsight.com
+% Last revision: June 18, 2019
 
-    scanfiles = findScansInSet(setpath, basenm);
+
+    scanfiles = findScansInSet(spath, basenm);
     
     fx = 0;
     for i = 1 : numel(scanfiles)

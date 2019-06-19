@@ -1,47 +1,34 @@
-%write_tmd
-%	
+function writetmd(hm, mmp, fpath, roi)
+%WRITETMD Writes a 3D surface to a TMD file.
+%	writetmd(HM, MMP, FILENAME) writes the 3D surface HM with XY spatial 
+%   resolution MMP in millimeters-per-pixel to the file specified by the 
+%   string FILENAME.
 %
-% -Usage-
-%	write_tmd(hm, mmp, fname)
-%	write_tmd(hm, mmp, roi, fname)
+%	writetmd(HM, MMP, FILENAME, ROI) writes the 3D surface HM with XY spatial
+%	resolution MMP to the file specified by the string FILENAME using crop
+%	region ROI specified by the row vector [XMIN XMAX YMIN YMAX]. The number of
+%	rows in HM must be ROI(4)-ROI(3)+1 and the number of columns in HM must be
+%   ROI(2)-ROI(1)+1, otherwise this region ROI does not correspond to the 
+%   array HM.
 %
-% -Inputs-
-%	hm       The heightmap in mm
-%	mmp
-%   [roi]    Region of interest (hm comes from larger scan)
-%            [x1 x2 y1 y2]
-%	fname
-%
-% -Outputs-
-%	None
-%
-% Last Modified: 8/24/2017
-function write_tmd(hm, mmp, varargin)
+%   See also readtmd
+
+% Last Modified: 1/26/2014
 
     hasroi = false;
-    if nargin == 3
-        if ~ischar(varargin{1})
-            error('third input must be a filename');
+    if exist('roi','var') 
+        if length(roi) ~= 4
+            error('ROI must be specified as [XMIN XMAX YMIN YMAX]');
         end
-        fname = varargin{1};
-    elseif nargin == 4
-        if ~isnumeric(varargin{1}) || ~(length(varargin{1}) == 4)
-            error('ROI must be specified as 4 numbers [x1 x2 y1 y2]');
-        end
-        roi = varargin{1};
-        hasroi = true;
-        if ~ischar(varargin{2})
-            error('fourth input must be a filename');
-        end
-        fname = varargin{2};
-
         if size(hm) ~= [roi(4)-roi(3)+1  roi(2)-roi(1)+1]
             error('ROI and heightmap are not the same size');
         end
+        hasroi = true;
+    else
+        roi = [];
     end
 
-
-	fd = fopen(fname, 'wb');
+	fd = fopen(fpath, 'wb');
 
 	header = 'Binary TrueMap Data File v2.0\r\n\0';
 	header = zeros(32,1,'uint8');
