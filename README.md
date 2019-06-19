@@ -5,21 +5,34 @@ This project contains MATLAB functions for working with GelSight scans and data.
 
 This package assumes that you have MATLAB 2016 or newer. While the functions are likely to work in almost any version of MATLAB and Octave, they have only been tested on MATLAB 2016.
 
-### Installing
-
 Download the package and add the folder to your MATLAB path. Run the demo
 program to get started:
 ~~~
 >> gsdemo
 ~~~
 
-
 ## Functions
 
- * **readscan** reads the scan.yaml file into a struct. 0-based coordinates are converted into 1-based coordinates.
- * **writescan** saves a scan struct in YAML format, readable by GelSight software.
- * **readtmd** reads the 3D data in the TMD file into a matrix where the values are in millimeters
- * **writetmd** save a matrix in TMD format
+Type `help gsmatlab` to see the available functions
+~~~
+>> help gsmatlab
+
+  Files
+    getprofile    - Get a profile from a heightmap
+    getshape      - Get a shape from an annotations list
+    gsdemo        - Demo script
+    levelprofile  - Level a profile
+    plotshape     - Plot a shape on current axes
+    readnrm       - Read a normal map in PNG format
+    readscan      - Read scan.yaml file into struct
+    readtmd       - Read 3D file in TMD format into array
+    writenrm      - Save normal map to PNG file
+    writescan     - Save struct in YAML format
+    writetmd      - Save height array in TMD format
+~~~
+
+
+
 
 
 ## Authors
