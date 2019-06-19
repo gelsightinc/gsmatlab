@@ -11,6 +11,10 @@ program to get started:
 >> gsdemo
 ~~~
 
+You should get the following plot:
+
+<img src="http://www.gelsight.com/downloads/demoplot.png" alt="gsdemo output plot" style="width:600px;" />
+
 ## Functions
 
 Type `help gsmatlab` to see the available functions
