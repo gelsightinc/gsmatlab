@@ -11,10 +11,10 @@ Download the package and add the folder to your MATLAB path.
 
 ## Functions
 
- * **readScanFile** reads the scan.yaml file into a struct. 0-based coordinates are converted into 1-based coordinates.
- * **writeScanFile** saves a scan struct in YAML format, readable by GelSight software.
- * **readTmd** reads the 3D data in the TMD file into a matrix where the values are in millimeters
- * **writeTmd** save a matrix in TMD format
+ * **readscan** reads the scan.yaml file into a struct. 0-based coordinates are converted into 1-based coordinates.
+ * **writescan** saves a scan struct in YAML format, readable by GelSight software.
+ * **readtmd** reads the 3D data in the TMD file into a matrix where the values are in millimeters
+ * **writetmd** save a matrix in TMD format
 
 
 ## Authors
