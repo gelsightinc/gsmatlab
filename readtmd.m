@@ -20,7 +20,7 @@ function [hm,data] = readtmd(fpath)
 %
 %   mmp       The XY spatial resolution in millimeters-per-pixel
 %
-%   See also writeTmd
+%   See also writetmd
 
 % Last Modified: 1/26/2014
 

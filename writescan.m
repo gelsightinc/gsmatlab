@@ -1,10 +1,19 @@
-%writescanfile
+function writescan(sdata, outname)
+%WRITESCAN Saves a scan struct in YAML format.
+%	writescan(SDATA, FILENAME) saves a scan struct SDATA to the file specified 
+%   by the string FILENAME.
+%   
+%   The struct SDATA is assumed to have some of the following fields:
+%   
+%   images       A struct array with complete paths to the images in the scan
 %
-% -Usage-
+%   mmperpixel   The XY spatial resolution in millimeters-per-pixel
 %
-%    writescanfile(sdata, outname)
+%   annotations  A struct array of annotations (e.g., shapes).  Pixel 
+%                coordinates are converted from origin (1,1) to origin (0,0) 
+%                by subtracting 1.
 %
-function writescanfile(sdata, outname)
+%   See also readscan
 
     fd = fopen(outname,'w');
     writefield(fd, sdata, 'iscalib', 'logical');
@@ -20,7 +29,7 @@ function writescanfile(sdata, outname)
     writefield(fd, sdata, 'calib', 'string');
     
     if isfield(sdata,'crop')
-        fprintf(fd,'crop: [%d, %d, %d, %d]\n',sdata.crop);
+        fprintf(fd,'crop: [%d, %d, %d, %d]\n',sdata.crop-1);
     end
       
     if isfield(sdata,'stage')
@@ -99,31 +108,31 @@ function saveannotations(fd, annotations)
 			fprintf(fd,'  - type: %s\n',a.type);
 			fprintf(fd,'    name: %s\n',a.name);
 			fprintf(fd,'    id: %d\n',a.id);
-			fprintf(fd,'    x1: %.8f\n',a.x1);
-			fprintf(fd,'    x2: %.8f\n',a.x2);
-			fprintf(fd,'    y1: %.8f\n',a.y1);
-			fprintf(fd,'    y2: %.8f\n',a.y2);
+			fprintf(fd,'    x1: %.8f\n',a.x1-1);
+			fprintf(fd,'    x2: %.8f\n',a.x2-1);
+			fprintf(fd,'    y1: %.8f\n',a.y1-1);
+			fprintf(fd,'    y2: %.8f\n',a.y2-1);
         elseif strcmp(a.type,'Circle')
 			fprintf(fd,'  - type: %s\n',a.type);
 			fprintf(fd,'    name: %s\n',a.name);
 			fprintf(fd,'    id: %d\n',a.id);
-			fprintf(fd,'    x: %.8f\n',a.x);
-			fprintf(fd,'    y: %.8f\n',a.y);
+			fprintf(fd,'    x: %.8f\n',a.x-1);
+			fprintf(fd,'    y: %.8f\n',a.y-1);
 			fprintf(fd,'    r: %.8f\n',a.r);
         elseif strcmp(a.type,'Rectangle')
 			fprintf(fd,'  - type: %s\n',a.type);
 			fprintf(fd,'    name: %s\n',a.name);
 			fprintf(fd,'    id: %d\n',a.id);
-			fprintf(fd,'    x: %.8f\n',a.x);
-			fprintf(fd,'    y: %.8f\n',a.y);
+			fprintf(fd,'    x: %.8f\n',a.x-1);
+			fprintf(fd,'    y: %.8f\n',a.y-1);
 			fprintf(fd,'    w: %.8f\n',a.w);
             fprintf(fd,'    h: %.8f\n',a.h);
         elseif strcmp(a.type,'Point')
 			fprintf(fd,'  - type: %s\n',a.type);
 			fprintf(fd,'    name: %s\n',a.name);
 			fprintf(fd,'    id: %d\n',a.id);
-			fprintf(fd,'    x: %.8f\n',a.x);
-			fprintf(fd,'    y: %.8f\n',a.y);
+			fprintf(fd,'    x: %.8f\n',a.x-1);
+			fprintf(fd,'    y: %.8f\n',a.y-1);
         else
 			warning('unrecognized annotation type: %s',a.type);
 		end

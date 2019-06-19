@@ -1,17 +1,25 @@
-function sdata = readScanFile(fpath)
-%READSCANFILE  Read the scan.yaml file into a struct
+function sdata = readscan(fpath)
+%READSCAN Reads a scan file.
+%	SDATA = readscan(FILENAME) returns a structure whose fields contain 
+%   information about the scan saved in the YAML file specified by the
+%   string FILENAME.
 %
-%   sdata = readScanFile()
+%   The return value SDATA is a struct with the following fields:
+%   
+%   images       A struct array with complete paths to the images in the scan
 %
-
-% Author: Kimo Johnson, kimo@gelsight.com
-% Last revision: June 18, 2019
+%   mmperpixel   The XY spatial resolution in millimeters-per-pixel
+%
+%   annotations  A struct array of annotations (e.g., shapes) saved in the scan
+%                file. Pixel coordinates are converted from origin (0,0) to 
+%                origin (1,1) by adding 1.
+%
+%   See also writescan
 
     if ~exist(fpath,'file')
         error('cannot locate scan file: %s',fpath);
     end
     
-    %yamldata = ReadYaml(fpath);
 	fd = fopen(fpath,'r');
 	
 	line = fgetl(fd);
@@ -34,7 +42,7 @@ function sdata = readScanFile(fpath)
 			elseif strcmp(key,'calibspacing')
 				sdata.calibspacing = str2num(value);
 			elseif strcmp(key,'crop')
-				sdata.crop = str2num(value);
+				sdata.crop = str2num(value)+1;
 			elseif strcmp(key,'guid')
 				sdata.guid = value;
 			elseif strcmp(key,'mmperpixel')
@@ -147,17 +155,17 @@ function [annotations,lastline] = loadannotations(fd)
 		elseif strcmp(key,'id')
 			annotations(ix).id = str2num(value);
 		elseif strcmp(key,'x1')
-			annotations(ix).x1 = str2num(value);
+			annotations(ix).x1 = str2num(value)+1;
 		elseif strcmp(key,'x2')
-			annotations(ix).x2 = str2num(value);
+			annotations(ix).x2 = str2num(value)+1;
 		elseif strcmp(key,'y1')
-			annotations(ix).y1 = str2num(value);
+			annotations(ix).y1 = str2num(value)+1;
 		elseif strcmp(key,'y2')
-			annotations(ix).y2 = str2num(value);
+			annotations(ix).y2 = str2num(value)+1;
 		elseif strcmp(key,'x')
-			annotations(ix).x = str2num(value);
+			annotations(ix).x = str2num(value)+1;
 		elseif strcmp(key,'y')
-			annotations(ix).y = str2num(value);
+			annotations(ix).y = str2num(value)+1;
 		elseif strcmp(key,'r')
 			annotations(ix).r = str2num(value);
 		elseif strcmp(key,'w')
@@ -255,8 +263,8 @@ function pts = parsePointList(list)
 
     matches = regexp(points, pat, 'names');
     for i = 1 : numel(matches)
-        pts(1,i) = str2num(matches(i).x);
-        pts(2,i) = str2num(matches(i).y);
+        pts(1,i) = str2num(matches(i).x)+1;
+        pts(2,i) = str2num(matches(i).y)+1;
     end
 
 end
