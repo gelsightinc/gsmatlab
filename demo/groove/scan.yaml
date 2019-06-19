@@ -1,0 +1,18 @@
+images:
+  - image01.png
+  - image02.png
+  - image03.png
+  - image04.png
+  - image05.png
+  - image06.png
+guid: e7294ecb-bfe5-43ab-9df0-04f43335992c
+mmperpixel: 0.027458113509339
+crop: [0, 0, 0, 0]
+annotations: 
+  - type: Line
+    name: Line1
+    id: 49304086
+    x1: 220.25
+    y1: 258.75
+    x2: 368.00
+    y2: 257.25
