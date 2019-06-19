@@ -7,7 +7,12 @@ This package assumes that you have MATLAB 2016 or newer. While the functions are
 
 ### Installing
 
-Download the package and add the folder to your MATLAB path.
+Download the package and add the folder to your MATLAB path. Run the demo
+program to get started:
+~~~
+>> gsdemo
+~~~
+
 
 ## Functions
 
