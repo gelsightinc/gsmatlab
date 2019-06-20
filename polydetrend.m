@@ -30,6 +30,7 @@ function [hm2,lf] = polydetrend(hm, ord, mask)
     % Use all the samples if we're close to total
     if 1.5*nsamples > ntotal
         rx = mask;
+        nsamples = ntotal;
     else
         rx = false(size(mask));
         inds = find(mask);
@@ -42,12 +43,12 @@ function [hm2,lf] = polydetrend(hm, ord, mask)
     yv = yi/dim;
 
 
-    A = zeros(nsmp,ncf);
+    A = zeros(nsamples,ncf);
     A(:,1) = 1;
     cx = 2;
     for x = 1 : ord
         for y = 0 : x
-            A(:,cx) = xv.^(x-y) .* yv.^y
+            A(:,cx) = xv.^(x-y) .* yv.^y;
             cx = cx + 1;
         end
     end
@@ -61,7 +62,7 @@ function [hm2,lf] = polydetrend(hm, ord, mask)
     cx = 2;
     for x = 1 : ord
         for y = 0 : x
-            lf = lf + qcf(cx)*xv.^(x-y) .* yv.^y
+            lf = lf + qcf(cx)*xv.^(x-y) .* yv.^y;
             cx = cx + 1;
         end
     end
