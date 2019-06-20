@@ -1,6 +1,6 @@
 function writescan(sdata, outname)
 %WRITESCAN Saves a scan struct in YAML format.
-%	writescan(SDATA, FILENAME) saves a scan struct SDATA to the file specified 
+%   writescan(SDATA, FILENAME) saves a scan struct SDATA to the file specified 
 %   by the string FILENAME.
 %   
 %   The struct SDATA is assumed to have some of the following fields:
@@ -47,18 +47,18 @@ function writescan(sdata, outname)
         end
     end
 
-	if isfield(sdata,'annotations')
-		fprintf(fd,'annotations:\n');
-		saveannotations(fd, sdata.annotations);
-	end
+    if isfield(sdata,'annotations')
+        fprintf(fd,'annotations:\n');
+        saveannotations(fd, sdata.annotations);
+    end
 
-	if isfield(sdata,'transform')
-		fprintf(fd,'transform: ');
-		% Save matrices in row-major order
-		A = sdata.transform';
-		writevector(fd, A(:));
-		fprintf(fd,'\n');
-	end
+    if isfield(sdata,'transform')
+        fprintf(fd,'transform: ');
+        % Save matrices in row-major order
+        A = sdata.transform';
+        writevector(fd, A(:));
+        fprintf(fd,'\n');
+    end
     
     
     fclose(fd);
@@ -90,52 +90,52 @@ end
 %
 %
 function writevector(fd, vec)
-	fprintf(fd,'[');
-	for i = 1 : length(vec)-1
-		fprintf(fd,'%.8f, ',vec(i));
-	end
-	fprintf(fd,'%.8f',vec(end));
-	fprintf(fd,']');
+    fprintf(fd,'[');
+    for i = 1 : length(vec)-1
+        fprintf(fd,'%.8f, ',vec(i));
+    end
+    fprintf(fd,'%.8f',vec(end));
+    fprintf(fd,']');
 end
 
 %
 %
 %
 function saveannotations(fd, annotations)
-	for i = 1 : numel(annotations)
-		a = annotations(i);
-		if strcmp(a.type,'Line')
-			fprintf(fd,'  - type: %s\n',a.type);
-			fprintf(fd,'    name: %s\n',a.name);
-			fprintf(fd,'    id: %d\n',a.id);
-			fprintf(fd,'    x1: %.8f\n',a.x1-1);
-			fprintf(fd,'    x2: %.8f\n',a.x2-1);
-			fprintf(fd,'    y1: %.8f\n',a.y1-1);
-			fprintf(fd,'    y2: %.8f\n',a.y2-1);
+    for i = 1 : numel(annotations)
+        a = annotations(i);
+        if strcmp(a.type,'Line')
+            fprintf(fd,'  - type: %s\n',a.type);
+            fprintf(fd,'    name: %s\n',a.name);
+            fprintf(fd,'    id: %d\n',a.id);
+            fprintf(fd,'    x1: %.8f\n',a.x1-1);
+            fprintf(fd,'    x2: %.8f\n',a.x2-1);
+            fprintf(fd,'    y1: %.8f\n',a.y1-1);
+            fprintf(fd,'    y2: %.8f\n',a.y2-1);
         elseif strcmp(a.type,'Circle')
-			fprintf(fd,'  - type: %s\n',a.type);
-			fprintf(fd,'    name: %s\n',a.name);
-			fprintf(fd,'    id: %d\n',a.id);
-			fprintf(fd,'    x: %.8f\n',a.x-1);
-			fprintf(fd,'    y: %.8f\n',a.y-1);
-			fprintf(fd,'    r: %.8f\n',a.r);
+            fprintf(fd,'  - type: %s\n',a.type);
+            fprintf(fd,'    name: %s\n',a.name);
+            fprintf(fd,'    id: %d\n',a.id);
+            fprintf(fd,'    x: %.8f\n',a.x-1);
+            fprintf(fd,'    y: %.8f\n',a.y-1);
+            fprintf(fd,'    r: %.8f\n',a.r);
         elseif strcmp(a.type,'Rectangle')
-			fprintf(fd,'  - type: %s\n',a.type);
-			fprintf(fd,'    name: %s\n',a.name);
-			fprintf(fd,'    id: %d\n',a.id);
-			fprintf(fd,'    x: %.8f\n',a.x-1);
-			fprintf(fd,'    y: %.8f\n',a.y-1);
-			fprintf(fd,'    w: %.8f\n',a.w);
+            fprintf(fd,'  - type: %s\n',a.type);
+            fprintf(fd,'    name: %s\n',a.name);
+            fprintf(fd,'    id: %d\n',a.id);
+            fprintf(fd,'    x: %.8f\n',a.x-1);
+            fprintf(fd,'    y: %.8f\n',a.y-1);
+            fprintf(fd,'    w: %.8f\n',a.w);
             fprintf(fd,'    h: %.8f\n',a.h);
         elseif strcmp(a.type,'Point')
-			fprintf(fd,'  - type: %s\n',a.type);
-			fprintf(fd,'    name: %s\n',a.name);
-			fprintf(fd,'    id: %d\n',a.id);
-			fprintf(fd,'    x: %.8f\n',a.x-1);
-			fprintf(fd,'    y: %.8f\n',a.y-1);
+            fprintf(fd,'  - type: %s\n',a.type);
+            fprintf(fd,'    name: %s\n',a.name);
+            fprintf(fd,'    id: %d\n',a.id);
+            fprintf(fd,'    x: %.8f\n',a.x-1);
+            fprintf(fd,'    y: %.8f\n',a.y-1);
         else
-			warning('unrecognized annotation type: %s',a.type);
-		end
-	end
+            warning('unrecognized annotation type: %s',a.type);
+        end
+    end
 end
 

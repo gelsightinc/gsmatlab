@@ -1,10 +1,10 @@
 function s = getshape(annotations, shape, name)
 %GETSHAPE Get a shape from an annotations list.
-%	S = getshape(ANNOTATIONS, SHAPE) returns a cell array of shapes of type 
+%   S = getshape(ANNOTATIONS, SHAPE) returns a cell array of shapes of type 
 %   SHAPE or an empty array if no shapes of type SHAPE exist in the
 %   annotation list ANNOTATIONS. 
 %
-%	S = getshape(ANNOTATIONS, SHAPE, NAME) returns a shape with name specified
+%   S = getshape(ANNOTATIONS, SHAPE, NAME) returns a shape with name specified
 %   by the string NAME. When NAME is specified, SHAPE can be empty.
 %
 %   See also readscan

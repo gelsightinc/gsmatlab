@@ -1,6 +1,6 @@
 function p = getprofile(hm, ln, mmpp)
 %GETPROFILE Extract a profile along a line from a height map
-%	P = getprofile(HM, LN, MMPP) returns a height profile P by interpolating 
+%   P = getprofile(HM, LN, MMPP) returns a height profile P by interpolating 
 %   the heightmap HM along the line specified by LN. The line LN is either a
 %   1-by-4 vector [X1 Y1 X2 Y2] or a 2-by-2 array [X1 X2; Y1 Y2] specifying 
 %   the end points of the line in in pixel coordinates. 

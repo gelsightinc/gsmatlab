@@ -30,7 +30,7 @@ function [rpts,A] = levelprofile(pts, rg)
     end
 
 
-	spts = pts;
+    spts = pts;
     if nargin > 1
         spts = [];
         for i = 1 : numel(regions)
@@ -72,28 +72,28 @@ end
 %
 function [U,T,M] = localpca(X)
 
-	[nRows, nColumns] = size( X );
+    [nRows, nColumns] = size( X );
 
-	% Compute the column vector mean
-	M = mean( X, 2 );
+    % Compute the column vector mean
+    M = mean( X, 2 );
 
-	% The zero-mean form of X
-	for k = 1 : nColumns
-		X(:,k) = X(:,k) - M;
-	end
+    % The zero-mean form of X
+    for k = 1 : nColumns
+        X(:,k) = X(:,k) - M;
+    end
 
-	S = X*X'/(nColumns-1);
-	[V,E] = eig(S);
-	clear S;
-	
-	E = real(diag(E));  
-	V = real(V);
+    S = X*X'/(nColumns-1);
+    [V,E] = eig(S);
+    clear S;
+    
+    E = real(diag(E));  
+    V = real(V);
   
-	% Sort the eigenvalues
-	[srtd,inds] = sort(E, 'descend');
-	clear srtd
-	
-	U = V(:,inds);
-	T = E(inds);
+    % Sort the eigenvalues
+    [srtd,inds] = sort(E, 'descend');
+    clear srtd
+    
+    U = V(:,inds);
+    T = E(inds);
 end
 

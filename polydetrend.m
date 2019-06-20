@@ -1,57 +1,73 @@
-function hm2 = detrendQuadraticMask(hm, mask, md)
+function [hm2,lf] = polydetrend(hm, ord, mask)
+%POLYDETREND Apply polynomial detrending to a surface.
+%   HM2 = polydetrend(HM, ORD) performs polynomial detrending of order ORD on
+%   the heightmap HM. The parameter ORD is an integer specifying the order of
+%   the polynomial model from 1 to 10, 1 = linear, 2 = quadratic, etc. The
+%   output HM2 is the heightmap after subtracting the polynomial model. 
+%
+%   HM2 = polydetrend(HM, ORD, MASK) performs polynomial detrending of order ORD
+%   on the heightmap HM within the region specified by the binary mask MASK. 
+%
+%   [HM2,PM] = polydetrend(HM, ORD, MASK) returns the polynomial model PM.
+%
+% See also shapemask
 
-	settings.quadratic = true;
-	if exist('md','var') && ~md
-		settings.quadratic = false;
-	end
+    % Number of samples per model coefficient
+    samplespercoeff = 15000;
 
-	[ydim,xdim] = size(hm);
+    [ydim,xdim] = size(hm);
+    if ~exist('mask','var')
+        mask = true(ydim,xdim);
+    end
 
-	dim = max(xdim,ydim);
+    dim = max(xdim,ydim);
 
-	%[xi,yi] = meshgrid(1:xdim,1:ydim);
-    [yi,xi] = find(mask);
-	xv = xi/dim;
-	yv = yi/dim;
+    ncf = (ord+1)*(ord+2)/2;
+
+    ntotal = sum(mask(:));
+    nsamples = samplespercoeff * ncf;
+
+    % Use all the samples if we're close to total
+    if 1.5*nsamples > ntotal
+        rx = mask;
+    else
+        rx = false(size(mask));
+        inds = find(mask);
+        ix = randperm(length(inds), nsamples);
+        rx(inds(ix)) = true;
+    end
+
+    [yi,xi] = find(rx);
+    xv = xi/dim;
+    yv = yi/dim;
 
 
-	if settings.quadratic
-		A = [xv.^3 xv.^2.*yv.^1 xv.*yv.^2 yv.^3 xv.^2 xv.*yv yv.^2 xv yv ones(sum(mask(:)),1)];
-	else
-		A = [xv yv ones(sum(mask(:)),1)];
-	end
+    A = zeros(nsmp,ncf);
+    A(:,1) = 1;
+    cx = 2;
+    for x = 1 : ord
+        for y = 0 : x
+            A(:,cx) = xv.^(x-y) .* yv.^y
+            cx = cx + 1;
+        end
+    end
 
-	hv = hm(mask);
-	qcf0 = pinv(A)*hv;
-	qcf = qcf0;
+    hv = hm(rx);
+    qcf = A\hv;
 
-	epsilon = 1e-2;
-	mxw = 1/(2*epsilon);
-	for i = 1 : 5
-		err = abs(A*qcf - hv);
+    [xv,yv] = meshgrid((1:size(hm,2))/dim, (1:size(hm,1))/dim);
+    
+    lf = qcf(1)*ones(size(hm));
+    cx = 2;
+    for x = 1 : ord
+        for y = 0 : x
+            lf = lf + qcf(cx)*xv.^(x-y) .* yv.^y
+            cx = cx + 1;
+        end
+    end
 
-		xw = 1./(2*max(err, epsilon));
 
-		xw = xw/mxw;
-
-		W = diag(sparse(xw));
-		qcf = inv(A'*W*A)*A'*W*hv;
-	end
-	
-
-	[xi,yi] = meshgrid(1:xdim,1:ydim);
-	xv = xi(:)/dim;
-	yv = yi(:)/dim;
-	if settings.quadratic
-		Afull = [xv.^3 xv.^2.*yv.^1 xv.*yv.^2 yv.^3 xv.^2 xv.*yv yv.^2 xv yv ones(ydim*xdim,1)];
-	else
-		Afull = [xv yv ones(ydim*xdim,1)];
-	end
-	plane = reshape(Afull*qcf,ydim,xdim);
-
-	hm2 = hm - plane;
-	md = prctile(hm2(:),50);
-	hm2 = hm2 - md;
-	
+    hm2 = hm - lf;
+    
 end
 

@@ -1,8 +1,8 @@
 function nrm = readnrm(fpath)
 %READNRM Reads a normal map saved in PNG format.
-%	NRM = readnrm(FILENAME) reads a normal map from the file specified by the
-%	string FILENAME. FILENAME must be in the current directory, in a
-%	directory on the MATLAB path, or include a full or relative path to a file.
+%   NRM = readnrm(FILENAME) reads a normal map from the file specified by the
+%   string FILENAME. FILENAME must be in the current directory, in a
+%   directory on the MATLAB path, or include a full or relative path to a file.
 %
 %   The return value NRM is an M-by-N-by-3 array containing the unit-length
 %   surface normal at every pixel, with the X, Y and Z components of the 
