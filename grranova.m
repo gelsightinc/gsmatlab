@@ -69,6 +69,7 @@ function [dtv,dtol,ndc] = grranova(scores, nuser, ntrial, varargin)
         sumx(ux)   = sum(userscores(:));
         partsq(ux) = sum(ptsq);
     end
+    
     appss   = sum(sumx.^2)/(npart*ntrial) ...                         % Cell H-I, 29
               - sum(sumx).^2 / (npart*ntotaltrials);
     partss  = sum(sum(scores,2).^2)/(nuser*ntrial) ...                % Cell H-I, 30
@@ -97,8 +98,8 @@ function [dtv,dtol,ndc] = grranova(scores, nuser, ntrial, varargin)
     end
 
     % F-distribution test
-    apartf  = 0;
-    apartpb = 0;
+    apartf   = 0;
+    apartpbf = 0;
     if apartss > 0
         apartf   = apartms / gagems;                                   % Cell L-M, 31
         apartpbf = 1-fdistribution(apartf, ndf_apart, ndf_gage); 
@@ -107,7 +108,6 @@ function [dtv,dtol,ndc] = grranova(scores, nuser, ntrial, varargin)
     repeatvr = totalms;                                               % Cell P, 37
     reprodvr = max(0.0, (appms-totalms)/(npart*ntrial));              % Cell P, 38
     apartvr  = 0.0;                                                   % Cell P, 39
-    partvr   = 0.0;
     partvr   = (partms-totalms)/(nuser*ntrial);                       % Cell P, 41
     if apartpbf <= 0.05
         repeatvr = gagems;                                            % Cell P, 37
@@ -128,7 +128,6 @@ function [dtv,dtol,ndc] = grranova(scores, nuser, ntrial, varargin)
     partsg   = sqrt(partvr);                                          % Cell F-G, 41
 
     totalsg = sqrt( repeatvr + reprodvr + apartvr + partvr );         % Cell F-G, 42
-
 
     EV = repeatsg;
     AV = reprodsg;
