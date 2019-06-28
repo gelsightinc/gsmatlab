@@ -62,11 +62,9 @@ function [imout,ff] = readimg(fpath, ch, varargin)
 
             if doflat && isfield(sdata,'calib') && exist(sdata.calib,'file')
                 if isempty(ff)
-                    fprintf('loading flatfield\n');
                     ff = flatfieldmodel(sdata.calib);
 
                     if ~isfield(ff,'correction')
-                    fprintf('running correction\n');
                         ff.correction = loadcmap(ff);
                     end
                 end
