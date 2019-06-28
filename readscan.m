@@ -37,6 +37,8 @@ function sdata = readscan(fpath)
             elseif strcmp(key,'images')
                 [impaths,lastline] = loadimages(fd, fpath);
                 sdata.images = impaths;
+            elseif strcmp(key,'calib')
+                sdata.calib = findcalib(fpath, value);
             elseif strcmp(key,'calibradius')
                 sdata.calibradius = str2num(value);
             elseif strcmp(key,'calibspacing')
@@ -268,3 +270,46 @@ function pts = parsePointList(list)
     end
 
 end
+
+%
+% find calibration file
+%
+function cpath = findcalib(fpath, value)
+
+    [scandr,scanfile] = fileparts(fpath);
+    [setdr,scannm]    = fileparts(scandr);
+    [parentdr,setnm]  = fileparts(setdr);
+    [cdir,cname,cext] = fileparts(value);
+
+    cfile = [cname cext];
+    cpath = '';
+    if isempty(cname)
+        return;
+    end
+
+    found = false;
+    % Does the set have the specified file?
+    files = dir(setdr);
+    cpath = '';
+    for i = 1 : numel(files)
+        if strcmp(files(i).name,cfile)
+            cpath = fullfile(setdr, cfile);
+            found = true;
+            break;
+        end
+    end
+
+    if ~found
+        files = dir(parentdr);
+        for i = 1 : numel(files)
+            if strcmp(files(i).name,cfile)
+                cpath = fullfile(setdr, cfile);
+                found = true;
+                break;
+            end
+        end
+    end
+
+
+end
+
