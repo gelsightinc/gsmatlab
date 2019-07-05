@@ -1,4 +1,4 @@
-function [rpts,A] = levelprofile(pts, rg)
+function [rpts,A,lpts] = levelprofile(pts, rg, ord)
 %LEVELPROFILE Level a profile to make the specified regions horizontal.
 %   Q = levelprofile(P, REGIONS) levels the profile P according to the regions
 %   specified in the array REGIONS. The output profile Q is the profile P
@@ -14,9 +14,16 @@ function [rpts,A] = levelprofile(pts, rg)
 %
 %   [Q,A] = levelprofile(P, REGIONS) levels the profile P according to the 
 %   regions specified in the array REGIONS and returns the transformation
-%   matrix A.
+%
+%   [Q,A,Y] = levelprofile(P, REGIONS, ORD) fits a polynomial of order ORD
+%   to the regions specified in the array REGIONS and performs higher-order
+%   detrending by subtracting the best-fit polynomial Y from the surface.
 %
 % See also getprofile
+
+    if ~exist('rg','var')
+        rg = [1 size(pts,2)];
+    end
 
     if ~iscell(rg)
         if size(rg,2) < 2
@@ -29,18 +36,23 @@ function [rpts,A] = levelprofile(pts, rg)
         regions = rg;
     end
 
+    % Detrending order
+    if ~exist('ord','var')
+        ord = 1;
+    end
 
-    spts = pts;
+    allinds = 1 : size(pts,2);
     if nargin > 1
-        spts = [];
+        allinds = [];
         for i = 1 : numel(regions)
             r = regions{i};
             inds = find(pts(1,:) >= r(1) & pts(1,:) <= r(2));
 
-            spts = [spts pts(:,inds)];
+            allinds = [allinds inds];
         end
 
     end
+    spts = pts(:,allinds);
 
     [U,T,M] = localpca(spts);
 
@@ -56,14 +68,37 @@ function [rpts,A] = levelprofile(pts, rg)
     % Mean value
     tpts = R*(spts - repmat(M,1,size(spts,2)));
     Z0 = mean(tpts,2);
+
+    p1 = R*(pts(:,1)-M);
+    Z0(1) = p1(1);
     rpts = pts - repmat(M,1,size(pts,2));
     rpts = R*rpts - repmat(Z0,1,size(pts,2));
 
-    if nargout == 2
-        A = eye(3,3);
-        A(1:2,1:2) = R;
-        A(1:2,3)   = -Z0 - R*M;
+    % Rigid transformation
+    A = eye(3,3);
+    A(1:2,1:2) = R;
+    A(1:2,3)   =  -Z0 - R*M;
+
+    lpts = inv(A)*[rpts(1,:); zeros(1,size(rpts,2)); ones(1,size(rpts,2))];
+
+    % Higher-order detrending
+    if ord > 1
+        xv = rpts(1,allinds)';
+        B = pmatrix(xv, ord);
+
+        cf = B\rpts(2,allinds)';
+
+		lf = cf(1)*ones(1,size(rpts,2));
+		xv = rpts(1,:);
+
+		for x = 1 : ord
+            lf = lf + cf(x+1)*xv.^x;
+        end
+		rpts(2,:) = rpts(2,:) - lf;
+
+        lpts = inv(A)*[rpts(1,:); lf; ones(1,size(rpts,2))];
     end
+    lpts = lpts(1:2,:);
     
 end
 
@@ -97,3 +132,17 @@ function [U,T,M] = localpca(X)
     T = E(inds);
 end
 
+%
+% matrix for polynomial fit
+%
+function A = pmatrix(xv, ord)
+
+    nsamples = length(xv);
+    ncf = ord + 1;
+    A = zeros(nsamples,ncf);
+    A(:,1) = 1;
+    for x = 1 : ord
+        A(:,x+1) = xv.^x;
+    end
+
+end
