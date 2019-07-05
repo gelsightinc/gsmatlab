@@ -22,21 +22,23 @@ Type `help gsmatlab` to see the available functions
 >> help gsmatlab
 
   Files
-    getprofile    - Get a profile from a heightmap
-    getshape      - Get a shape from an annotations list
-    gsdemo        - Demo script
-    levelprofile  - Level a profile
-    plotshape     - Plot a shape on current axes
-    readnrm       - Read a normal map in PNG format
-    readscan      - Read scan.yaml file into struct
-    readtmd       - Read 3D file in TMD format into array
-    writenrm      - Save normal map to PNG file
-    writescan     - Save struct in YAML format
-    writetmd      - Save height array in TMD format
+    getprofile    - Extract a profile along a line from a height map.
+    getshape      - Get a shape from an annotations list.
+    gsdemo        - Simple demo script showing how to plot a profile from a GelSight scan.
+    levelprofile  - Level a profile to make the specified regions horizontal.
+    plotshape     - Plots a shape in the current axes.
+    readnrm       - Reads a normal map saved in PNG format.
+    readscan      - Reads a scan file.
+    readtmd       - Reads a 3D measurement saved in TMD format.
+    writenrm      - Save a normal map in PNG format.
+    writescan     - Saves a scan struct in YAML format.
+    writetmd      - Writes a 3D surface to a TMD file.
+    findscans    - Reads a 3D measurement saved in TMD format.
+    grranova     - Do a Gage R&R Analysis of Variance on a set of measurements.
+    polydetrend  - Apply polynomial detrending to a surface.
+    readimg      - Reads an image from a scan.
+    shapemask    - Make a mask from the specified shape.
 ~~~
-
-
-
 
 
 ## Authors
