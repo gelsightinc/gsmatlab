@@ -23,7 +23,7 @@ function [imout,ff] = readimg(fpath, ch, varargin)
     if numel(varargin) == 2 
         arg1 = varargin{1};
         arg2 = varargin{2};
-        if strcmp(arg1(1:2),'ff') || strcmp(arg(1:2),'fl')
+        if strcmp(arg1(1:2),'ff') || strcmp(arg1(1:2),'fl')
             if isstruct(arg2)
                 ff = arg2;
                 doflat = true;
