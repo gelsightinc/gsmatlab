@@ -1,5 +1,5 @@
 function scans = findscans(spath, scannm, tag)
-%FINDSCANS Reads a 3D measurement saved in TMD format.
+%FINDSCANS Finds all scans and associated files under the specifid path
 %   S = findscans(SPATH) finds all scans within the folder specified by the
 %   string SPATH. 
 %
