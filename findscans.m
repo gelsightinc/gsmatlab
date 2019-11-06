@@ -131,7 +131,7 @@ function sdata = add3dfiles(yamlpath, tag)
     end
         
     if numel(tmdfiles) > 1 && isempty(tag)
-        warning('%d TMD files found in %s, using first',numel(tmdfiles),dpath);
+        warning('%d TMD files found in %s, using first',numel(tmdfiles),scanfoldernm);
         tmdpath = tmdfiles(1).path;
     end
         
