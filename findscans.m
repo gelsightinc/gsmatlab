@@ -40,7 +40,7 @@ function scans = findscans(spath, scannm, tag)
 
         % Skip files
         localpath = fullfile(spath,localfiles(i).name);
-        if ~isdir(localpath)
+        if ~isfolder(localpath)
             continue;
         end
 
@@ -111,8 +111,11 @@ function sdata = add3dfiles(yamlpath, tag)
             tmdix = tmdix + 1;
         end
 
-        sx = strfind(localfiles(i).name,tag);
-        if strcmp(tempex,'.tmd') && ~isempty(sx)
+        sx = [];
+        if ~isempty(tag)
+            sx = strfind(localfiles(i).name,tag);
+        end
+        if ~isempty(sx) && strcmp(tempex,'.tmd')
             tmdpath = fullfile(fpath,localfiles(i).name);
         end
                     

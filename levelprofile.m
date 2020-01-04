@@ -113,9 +113,7 @@ function [U,T,M] = localpca(X)
     M = mean( X, 2 );
 
     % The zero-mean form of X
-    for k = 1 : nColumns
-        X(:,k) = X(:,k) - M;
-    end
+    X = X - repmat(M,1,size(X,2));
 
     S = X*X'/(nColumns-1);
     [V,E] = eig(S);
