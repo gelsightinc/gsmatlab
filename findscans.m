@@ -1,5 +1,5 @@
 function scans = findscans(spath, scannm, tag)
-%FINDSCANS Finds all scans and associated files under the specifid path
+%FINDSCANS Finds all scans and associated files under the specified path
 %   S = findscans(SPATH) finds all scans within the folder specified by the
 %   string SPATH. 
 %
