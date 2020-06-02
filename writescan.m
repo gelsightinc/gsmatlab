@@ -119,6 +119,15 @@ function saveannotations(fd, annotations)
             fprintf(fd,'    x: %.8f\n',a.x-1);
             fprintf(fd,'    y: %.8f\n',a.y-1);
             fprintf(fd,'    r: %.8f\n',a.r);
+        elseif strcmp(a.type,'GridCircle')
+            fprintf(fd,'  - type: %s\n',a.type);
+            fprintf(fd,'    name: %s\n',a.name);
+            fprintf(fd,'    id: %d\n',a.id);
+            fprintf(fd,'    x: %.8f\n',a.x-1);
+            fprintf(fd,'    y: %.8f\n',a.y-1);
+            fprintf(fd,'    r: %.8f\n',a.r);
+            fprintf(fd,'   gx: %.d\n',a.gx  );
+            fprintf(fd,'   gy: %.d\n',a.gy  );
         elseif strcmp(a.type,'Rectangle')
             fprintf(fd,'  - type: %s\n',a.type);
             fprintf(fd,'    name: %s\n',a.name);

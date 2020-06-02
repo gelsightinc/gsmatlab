@@ -168,6 +168,10 @@ function [annotations,lastline] = loadannotations(fd)
             annotations(ix).x = str2num(value)+1;
         elseif strcmp(key,'y')
             annotations(ix).y = str2num(value)+1;
+        elseif strcmp(key,'gx')
+            annotations(ix).gx = str2num(value);
+        elseif strcmp(key,'gy')
+            annotations(ix).gy = str2num(value);
         elseif strcmp(key,'r')
             annotations(ix).r = str2num(value);
         elseif strcmp(key,'w')
