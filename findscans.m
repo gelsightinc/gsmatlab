@@ -51,8 +51,8 @@ function scans = findscans(spath, scannm, tag)
         % otherwise, we only save scans that match scannm
         if exist(scanpath,'file') && (isempty(scannm) || ~isempty(st))
             [scandr,scanfile,scanext] = fileparts(scanpath);
-            [parentdr,scanfoldernm]   = fileparts(scandr);
-            scans(sx).name     = scanfoldernm;
+            [parentdr,scanfoldernm,sxt]   = fileparts(scandr);
+            scans(sx).name     = [scanfoldernm sxt];
             scans(sx).yamlpath = scanpath;
             scans(sx).tmdpath  = '';
             scans(sx).nrmpath  = '';
@@ -88,8 +88,9 @@ end
 function sdata = add3dfiles(yamlpath, tag)
 
     [scandr,scanfile,scanext] = fileparts(yamlpath);
-    [parentdr,scanfoldernm]   = fileparts(scandr);
-    sdata.name     = scanfoldernm;
+    [parentdr,scanfoldernm,sxt]   = fileparts(scandr);
+    % sxt is non-empty when folder name ends with something that looks like an extension
+    sdata.name     = [scanfoldernm sxt];   
     sdata.yamlpath = yamlpath;
     sdata.tmdpath  = '';
     sdata.nrmpath  = '';
