@@ -22,7 +22,7 @@ function [hm,data] = readtmd(fpath)
 %
 %   See also writetmd
 
-% Last Modified: 1/26/2014
+% Last Modified: 9/28/2020
 
     if ~exist(fpath,'file')
         error('cannot find file %s',fpath);
