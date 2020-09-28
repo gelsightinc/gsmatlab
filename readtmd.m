@@ -18,7 +18,7 @@ function [hm,data] = readtmd(fpath)
 %   offsety   The offset of this surface along the y-axis in millimeters with 
 %             respect to the full field of view. 
 %
-%   mmp       The XY spatial resolution in millimeters-per-pixel
+%   mmpp      The XY spatial resolution in millimeters-per-pixel
 %
 %   See also writetmd
 
@@ -66,7 +66,7 @@ function [hm,data] = readtmd(fpath)
     data.offsetx = fread(fd, 1, 'single');
     data.offsety = fread(fd, 1, 'single');
 
-    data.mmp     = data.lengthx / cols;
+    data.mmpp    = data.lengthx / cols;
 
     hmbuf = fread(fd, rows*cols, 'single');
     hm = reshape(hmbuf,[cols rows])';
