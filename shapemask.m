@@ -53,6 +53,14 @@ function bw = shapemask(fulltype,pts,sz)
         ix = xv >= r(1) & xv <= r(2) & yv >= r(3) & yv <= r(4);
         bw(ix) = true;
 
+    % Rectangle 
+    elseif strcmp(typ,'rec')
+        stx = pts(1);
+        edx = pts(1) + pts(3);
+        sty = pts(2);
+        edy = pts(2) + pts(4);
+        bw =  xv >= stx & xv <= edx & yv >= sty & yv <= edy;
+
     % Polygon
     elseif strcmp(typ,'pol')
         dst = norm(pts(:,1) - pts(:,end));
@@ -94,6 +102,13 @@ function [sz,xl,yl] = sizefromshape(typ, pts)
         edx = ceil(max(pts(1,:)));
         sty = floor(min(pts(2,:)));
         edy = ceil(max(pts(2,:)));
+
+    elseif strcmp(typ,'rec')
+        stx = floor(pts(1));
+        edx = ceil(pts(1)+pts(3));
+        sty = floor(pts(2));
+        edy = ceil(pts(2)+pts(4));
+
     else
         error('unsupported shape type');
     end
