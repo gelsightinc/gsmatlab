@@ -44,10 +44,15 @@ function [imout,ff] = readimg(fpath, ch, varargin)
         imout = im2double(imread(fpath));
     elseif strcmp(fileext,'.yaml')
         sdata = readscan(fpath);
-        if ischar(ch)
-            channels = 1 : numel(sdata.images);
-        else
-            channels = 1;
+        channels = 1;
+        if ischar(ch) 
+            if strcmp(ch,'all')
+                channels = 1 : numel(sdata.images);
+            elseif ch >= '1' && ch <= num2str(numel(sdata.images))
+                channels = str2num(ch);
+            end
+        elseif isnumeric(ch)
+            channels = max(min(ch, numel(sdata.images)), 1);
         end
 
         % Get image size
