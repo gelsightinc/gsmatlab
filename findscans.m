@@ -25,8 +25,11 @@ function scans = findscans(spath, scannm, tag)
         tag = [];
     end
     
+    sdata = scandata();
+
     localfiles = dir(spath);
-    scans = [];
+    scans = sdata([]);
+
     sx    = 1;
     for i = 1 : numel(localfiles)
         % Skip hidden files and directories
@@ -80,6 +83,18 @@ function scans = findscans(spath, scannm, tag)
         end
     end
 
+end
+
+%
+%
+%
+function sdata = scandata()
+    sdata.name     = '';
+    sdata.yamlpath = '';
+    sdata.tmdpath  = '';
+    sdata.nrmpath  = '';
+    sdata.tmdfiles = '';
+    sdata.nrmfiles = '';
 end
 
 %
