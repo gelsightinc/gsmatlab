@@ -58,6 +58,8 @@ function c = unpackshape(a)
         c = [a.x1  a.y1  a.x2  a.y2];
     elseif strcmp(a.type,'Point')
         c = [a.x a.y];
+    elseif strcmp(a.type,'Rectangle')
+        c = [a.x a.w a.y a.h];
     elseif strcmp(a.type,'PolyLine')
         c = a.points;
     end
