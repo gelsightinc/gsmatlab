@@ -61,6 +61,9 @@ function sdata = readscan(fpath)
             elseif strcmp(key,'camera')
                 [s,lastline,lines] = ignorestruct(fd);
                 sdata.camera = lines;
+            elseif strcmp(key,'device')
+                [a,lastline] = loaddevice(fd);
+                sdata.device = a;
             elseif strcmp(key,'target')
                 [s,lastline] = loadtarget(fd);
                 sdata.target = s;
@@ -192,6 +195,7 @@ function [annotations,lastline] = loadannotations(fd)
 
 end
 
+
 %
 % Load the target block
 %
@@ -225,6 +229,46 @@ function [tgt,lastline] = loadtarget(fd)
             tgt(ix).pitch = str2num(value);
         elseif strcmp(key,'radius')
             tgt(ix).radius = str2num(value);
+        end
+        %fprintf('%s : %s\n',key,value);
+        
+        line = fgetl(fd);
+    end
+
+end
+
+%
+% Load the device block
+%
+function [tgt,lastline] = loaddevice(fd)
+    
+    line = fgetl(fd);
+    lastline = line;
+    ix = 1;
+    while ischar(line)
+        colonix = strfind(line,':');
+        
+        if isempty(colonix)
+            line = fgetl(fd);
+            continue;
+        end
+        % Count leading whitespace
+        whiteix = min(find(isspace(line) == 0));
+        if whiteix == 1
+            lastline = line;
+            return;
+        end
+        
+        
+        key = strtrim(line(1:colonix-1));
+        value = strtrim(line(colonix+1:end));
+
+        if strcmp(key,'devicetype')
+            tgt(ix).devicetype = value;
+        elseif strcmp(key,'devicetemp')
+            tgt(ix).devicetemp = str2num(value);
+        elseif strcmp(key,'serialnumber')
+            tgt(ix).serialnumber = value;
         end
         %fprintf('%s : %s\n',key,value);
         
