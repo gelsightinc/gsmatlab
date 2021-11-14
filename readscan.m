@@ -59,8 +59,8 @@ function sdata = readscan(fpath)
                 [s,lastline,lines] = ignorestruct(fd);
                 sdata.stage = lines;
             elseif strcmp(key,'camera')
-                [s,lastline,lines] = ignorestruct(fd);
-                sdata.camera = lines;
+                [a,lastline] = loadcamera(fd);
+                sdata.camera = a;
             elseif strcmp(key,'device')
                 [a,lastline] = loaddevice(fd);
                 sdata.device = a;
@@ -269,6 +269,56 @@ function [tgt,lastline] = loaddevice(fd)
             tgt(ix).devicetemp = str2num(value);
         elseif strcmp(key,'serialnumber')
             tgt(ix).serialnumber = value;
+        end
+        %fprintf('%s : %s\n',key,value);
+        
+        line = fgetl(fd);
+    end
+
+end
+
+%
+% Load the camera block
+%
+function [cdata,lastline] = loadcamera(fd)
+    
+    line = fgetl(fd);
+    lastline = line;
+
+    % Initialize struct
+    cdata.cameraid     = '';
+    cdata.cameratype   = '';
+    cdata.gelid        = '';
+    cdata.lensfocuspos = 0;
+    cdata.shutter      = 0;
+
+    while ischar(line)
+        colonix = strfind(line,':');
+        
+        if isempty(colonix)
+            line = fgetl(fd);
+            continue;
+        end
+        % Count leading whitespace
+        whiteix = min(find(isspace(line) == 0));
+        if whiteix == 1
+            lastline = line;
+            return;
+        end
+        
+        key = strtrim(line(1:colonix-1));
+        value = strtrim(line(colonix+1:end));
+
+        if strcmp(key,'cameraid')
+            cdata.cameraid = value;
+        elseif strcmp(key,'cameratype')
+            cdata.cameratype = value;
+        elseif strcmp(key,'gelid')
+            cdata.gelid = value;
+        elseif strcmp(key,'lensfocuspos')
+            cdata.lensfocuspos = str2num(value);
+        elseif strcmp(key,'shutter')
+            cdata.shutter = str2num(value);
         end
         %fprintf('%s : %s\n',key,value);
         
