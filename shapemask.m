@@ -50,6 +50,7 @@ function bw = shapemask(fulltype,pts,sz)
 
     % Rectangular ROI
     elseif strcmp(typ,'roi')
+        r = pts;
         ix = xv >= r(1) & xv <= r(2) & yv >= r(3) & yv <= r(4);
         bw(ix) = true;
 
