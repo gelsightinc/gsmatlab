@@ -32,7 +32,9 @@ function sdata = readscan(fpath)
             key = strtrim(key);
             
             value = strtrim(line(colonix+1:end));
-            if strcmp(key,'iscalib')
+            if strcmp(key, 'version')
+                sdata.version = str2double(value);
+            elseif strcmp(key,'iscalib')
                 sdata.iscalib = strcmp(value,'true');
             elseif strcmp(key,'images')
                 [impaths,lastline] = loadimages(fd, fpath);
@@ -85,8 +87,15 @@ function sdata = readscan(fpath)
     
     fclose(fd);
    
-    
-   
+    % Now check the version of the scan file
+    % If it is version 2.0 or greater, 
+    % the annotations are now stored in Analysis/scancontext.yaml
+    % annotations = shapes for this version
+    if (sdata.version >= 2)
+        [scandr,scanfile,scanext] = fileparts(fpath);
+        scancontext = fullfile(scandr, 'Analysis/scancontext.yaml');
+        sdata.annotations = loadshapesasannotations(scancontext);
+    end 
     
 end
 
@@ -116,6 +125,43 @@ function [impaths,lastline] = loadimages(fd, scanpath)
 
 end
 
+
+%
+%
+%
+function annotations = loadshapesasannotations(fpath)
+
+    fd = fopen(fpath,'r');
+    
+    line = fgetl(fd);
+    while ischar(line)
+
+        % Find key
+
+        colonix = strfind(line,':');
+        lastline = [];
+        if ~isempty(colonix)
+            key = line(1:colonix-1);
+            key = strtrim(key);
+            
+            value = strtrim(line(colonix+1:end));
+            if strcmp(key, 'shapes')
+                [a,lastline] = loadannotations(fd);
+                annotations = a;
+            end
+            
+        end
+        
+        if ~isempty(lastline)
+            line = lastline;
+        else
+            line = fgetl(fd);
+        end
+    end
+    
+    fclose(fd);
+    
+end
 
 %
 %
