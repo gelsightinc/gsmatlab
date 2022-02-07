@@ -91,7 +91,11 @@ function sdata = readscan(fpath)
     % If it is version 2.0 or greater, 
     % the annotations are now stored in Analysis/scancontext.yaml
     % annotations = shapes for this version
-    if (sdata.version >= 2)
+    if ~isfield(sdata,'version')
+        sdata.version = 1;
+    end
+
+    if sdata.version >= 2
         [scandr,scanfile,scanext] = fileparts(fpath);
         scancontext = fullfile(scandr, 'Analysis/scancontext.yaml');
         sdata.annotations = loadshapesasannotations(scancontext);
