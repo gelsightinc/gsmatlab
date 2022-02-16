@@ -98,7 +98,11 @@ function sdata = readscan(fpath)
     if sdata.version >= 2
         [scandr,scanfile,scanext] = fileparts(fpath);
         scancontext = fullfile(scandr, 'Analysis/scancontext.yaml');
-        sdata.annotations = loadshapesasannotations(scancontext);
+        if ~exist(scancontext, 'file')
+            fprintf('no annotations %s\n',scancontext);
+        else
+            sdata.annotations = loadshapesasannotations(scancontext);
+        end
     end 
     
 end
