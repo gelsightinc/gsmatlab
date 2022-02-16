@@ -142,6 +142,7 @@ function annotations = loadshapesasannotations(fpath)
     fd = fopen(fpath,'r');
     
     line = fgetl(fd);
+    annotations = [];
     while ischar(line)
 
         % Find key
