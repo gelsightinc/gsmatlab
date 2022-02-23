@@ -212,6 +212,8 @@ function [annotations,lastline] = loadannotations(fd)
             annotations(ix).type = value;
         elseif strcmp(key,'name')
             annotations(ix).name = value;
+        elseif strcmp(key,'label')
+            annotations(ix).label = value;
         elseif strcmp(key,'id')
             annotations(ix).id = str2num(value);
         elseif strcmp(key,'x1')

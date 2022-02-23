@@ -14,7 +14,9 @@ function h = plotshape(fulltype,pts,clr)
 %
 %   Point     S is a 1-by-2 array [X Y] specifying the coordinates of the point
 %
-%   Polyline  S is a 2-by-N array of points specifying a polyline or polygon
+%   Polyline  S is a 2-by-N array of points specifying a polyline
+%
+%   Polygon   S is a 2-by-N array of points specifying a polygon
 %
 %   Rectangle S is a 1-by-4 array [XMIN YMIN WIDTH HEIGHT] specifying a 
 %             rectangular area of interest
@@ -24,9 +26,10 @@ function h = plotshape(fulltype,pts,clr)
 %
 %   See also getshape
 
-% Last Modified: 6/19/2019
+% Last Modified: 2/22/2022
 
-    typ = lower(fulltype(1:3));
+    fulltype = lower(fulltype);
+    typ = fulltype(1:3);
 
     % Transpose points if necessary
     if size(pts,1) > 3
@@ -166,7 +169,9 @@ function h = plotshape(fulltype,pts,clr)
     % Polyline
     elseif strcmp(typ,'pol')
         if strcmp(lower(fulltype),'polygon') == 1
-            if norm(pts(:,end) - pts(:,1)) < 1e-3
+            % If the last point is not the same as the first point, 
+            % add first point at the end
+            if norm(pts(:,end) - pts(:,1)) > 1e-3
                 pts = [pts pts(:,1)];
             end
         end
@@ -174,9 +179,9 @@ function h = plotshape(fulltype,pts,clr)
         dim = size(pts,1);
 
         if dim==3
-            plot3(pts(1,:),pts(2,:),pts(3,:),clr,'LineWidth',2)
+            h = plot3(pts(1,:),pts(2,:),pts(3,:),clr,'LineWidth',2);
         else
-            plot(pts(1,:),pts(2,:),clr,'LineWidth',2)
+            h = plot(pts(1,:),pts(2,:),clr,'LineWidth',2);
         end
     
     % Rectangle
