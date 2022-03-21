@@ -114,6 +114,7 @@ function [impaths,lastline] = loadimages(fd, scanpath)
     
     [parentdr,parentnm,ext] = fileparts(scanpath);
     line = fgetl(fd);
+    lastline = '';
     ix = 1;
     while ischar(line)
         % Lists must have dash then space
@@ -129,7 +130,6 @@ function [impaths,lastline] = loadimages(fd, scanpath)
         ix = ix + 1;
         line = fgetl(fd);
     end
-    
 
 end
 
