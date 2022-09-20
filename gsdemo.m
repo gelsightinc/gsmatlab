@@ -20,7 +20,7 @@ end
 ln = lns{1};
 
 [hm,dt] = readtmd(hpath);
-mmpp = dt.mmp;
+mmpp = dt.mmpp;
 
 % Load first image
 im = im2double(imread(sdata.images(1).path));
