@@ -22,6 +22,7 @@ Type `help gsmatlab` to see the available functions
 >> help gsmatlab
 
   Files
+    checkset      - Check all scans in a folder for images and heightmaps
     getprofile    - Extract a profile along a line from a height map.
     getshape      - Get a shape from an annotations list.
     gsdemo        - Simple demo script showing how to plot a profile from a GelSight scan.
@@ -33,11 +34,11 @@ Type `help gsmatlab` to see the available functions
     writenrm      - Save a normal map in PNG format.
     writescan     - Saves a scan struct in YAML format.
     writetmd      - Writes a 3D surface to a TMD file.
-    findscans    - Reads a 3D measurement saved in TMD format.
-    grranova     - Do a Gage R&R Analysis of Variance on a set of measurements.
-    polydetrend  - Apply polynomial detrending to a surface.
-    readimg      - Reads an image from a scan.
-    shapemask    - Make a mask from the specified shape.
+    findscans     - Reads a 3D measurement saved in TMD format.
+    grranova      - Do a Gage R&R Analysis of Variance on a set of measurements.
+    polydetrend   - Apply polynomial detrending to a surface.
+    readimg       - Reads an image from a scan.
+    shapemask     - Make a mask from the specified shape.
 ~~~
 
 

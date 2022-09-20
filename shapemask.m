@@ -4,14 +4,17 @@ function bw = shapemask(fulltype,pts,sz)
 %   string SHAPE with parameters in the array S. The form of the array S depends
 %   on the shape type:
 %
-%   Circle   S is a 1-by-3 array [X Y R] specifying the (X,Y) center and radius R
-%            of the circle
+%   Circle    S is a 1-by-3 array [X Y R] specifying the (X,Y) center and radius R
+%             of the circle
 %
-%   Polygon  S is a 2-by-N array of points specifying a polygon. The algorithm
-%            will repeat the first point if the polygon is not closed
+%   Polygon   S is a 2-by-N array of points specifying a polygon. The algorithm
+%             will repeat the first point if the polygon is not closed
 %
-%   ROI      S is a 1-by-4 array [XMIN XMAX YMIN YMAX] specifying the coordinates
-%            of a rectangular region of interest
+%   Rectangle S is a 1-by-4 array [XMIN YMIN WIDTH HEIGHT] specifying a 
+%             rectangular area of interest
+%
+%   ROI       S is a 1-by-4 array [XMIN XMAX YMIN YMAX] specifying the coordinates
+%             of a rectangular region of interest
 %
 %   BW = shapemask(SHAPE, S, SZ) sets the size of the binary mask BW to be SZ.
 %   The coordinates used for the shape are [X,Y] = meshgrid(1:SZ(2),1:SZ(1)).
@@ -50,6 +53,7 @@ function bw = shapemask(fulltype,pts,sz)
 
     % Rectangular ROI
     elseif strcmp(typ,'roi')
+        r = pts;
         ix = xv >= r(1) & xv <= r(2) & yv >= r(3) & yv <= r(4);
         bw(ix) = true;
 
@@ -69,7 +73,7 @@ function bw = shapemask(fulltype,pts,sz)
         else
             p = pts;
         end
-        bw = polymask(pts, xl, yl);
+        bw = polymask(p, xl, yl);
 
     else
         error(sprintf('unrecognized type: %s',fulltype));

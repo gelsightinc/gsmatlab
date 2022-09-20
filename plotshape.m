@@ -6,24 +6,30 @@ function h = plotshape(fulltype,pts,clr)
 %
 %   The form of the array S depends on the shape type:
 %
-%   Circle   S is a 1-by-3 array [X Y R] specifying the (X,Y) center and radius R
-%            of the circle
+%   Circle    S is a 1-by-3 array [X Y R] specifying the (X,Y) center and radius R
+%             of the circle
 %
-%   Line     S is a 1-by-4 vector [X1 Y1 X2 Y2] or 2-by-2 array [X1 X2; Y1 Y2]
-%            specifing the (X,Y) coordinates of the end points of the line 
+%   Line      S is a 1-by-4 vector [X1 Y1 X2 Y2] or 2-by-2 array [X1 X2; Y1 Y2]
+%             specifing the (X,Y) coordinates of the end points of the line 
 %
-%   Point    S is a 1-by-2 array [X Y] specifying the coordinates of the point
+%   Point     S is a 1-by-2 array [X Y] specifying the coordinates of the point
 %
-%   Polyline S is a 2-by-N array of points specifying a polyline or polygon
+%   Polyline  S is a 2-by-N array of points specifying a polyline
 %
-%   ROI      S is a 1-by-4 array [XMIN XMAX YMIN YMAX] specifying the coordinates
-%            of a rectangular region of interest
+%   Polygon   S is a 2-by-N array of points specifying a polygon
+%
+%   Rectangle S is a 1-by-4 array [XMIN YMIN WIDTH HEIGHT] specifying a 
+%             rectangular area of interest
+%
+%   ROI       S is a 1-by-4 array [XMIN XMAX YMIN YMAX] specifying the coordinates
+%             of a rectangular region of interest
 %
 %   See also getshape
 
-% Last Modified: 6/19/2019
+% Last Modified: 2/22/2022
 
-    typ = lower(fulltype(1:3));
+    fulltype = lower(fulltype);
+    typ = fulltype(1:3);
 
     % Transpose points if necessary
     if size(pts,1) > 3
@@ -163,7 +169,9 @@ function h = plotshape(fulltype,pts,clr)
     % Polyline
     elseif strcmp(typ,'pol')
         if strcmp(lower(fulltype),'polygon') == 1
-            if norm(pts(:,end) - pts(:,1)) < 1e-3
+            % If the last point is not the same as the first point, 
+            % add first point at the end
+            if norm(pts(:,end) - pts(:,1)) > 1e-3
                 pts = [pts pts(:,1)];
             end
         end
@@ -171,11 +179,22 @@ function h = plotshape(fulltype,pts,clr)
         dim = size(pts,1);
 
         if dim==3
-            plot3(pts(1,:),pts(2,:),pts(3,:),clr,'LineWidth',2)
+            h = plot3(pts(1,:),pts(2,:),pts(3,:),clr,'LineWidth',2);
         else
-            plot(pts(1,:),pts(2,:),clr,'LineWidth',2)
+            h = plot(pts(1,:),pts(2,:),clr,'LineWidth',2);
         end
     
+    % Rectangle
+    elseif strcmp(typ,'rec')
+        mnx = pts(1);
+        mxx = pts(1)+pts(3);
+        mny = pts(2);
+        mxy = pts(2)+pts(4);
+
+        fullpts = [mnx mny; mxx mny; mxx mxy; mnx mxy; mnx mny]';
+        
+        h = plot(fullpts(1,:),fullpts(2,:),clr,'LineWidth',2);
+
     % ROI
     elseif strcmp(typ,'roi')
         % I want the roi plotted outside the pixels

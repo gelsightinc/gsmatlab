@@ -116,23 +116,39 @@ function sdata = add3dfiles(yamlpath, tag)
     
     localfiles = dir(fpath);
     tmdfiles = [];
+    nrmfiles = [];
     tmdix = 1;
+    nrmix = 1;
     tmdpath = '';
+    nrmpath = '';
     for i = 1 : numel(localfiles)
         
         [tempdr,tempnm,tempex] = fileparts(localfiles(i).name);
         
+        % If the extension is tmd, add it to the list of TMD files
         if strcmp(tempex,'.tmd')
             tmdfiles(tmdix).path = fullfile(fpath,localfiles(i).name);
             tmdix = tmdix + 1;
         end
 
+        % If the filename ends in _nrm.png, add it to the list of normal maps
+        if ~isempty(strfind(localfiles(i).name,'_nrm.png'))
+            nrmfiles(nrmix).path = fullfile(fpath,localfiles(i).name);
+            nrmix = nrmix + 1;
+        end
+
+        % If this file contains the suffix, set tmdpath or nrmpath
         sx = [];
         if ~isempty(tag)
             sx = strfind(localfiles(i).name,tag);
         end
-        if ~isempty(sx) && strcmp(tempex,'.tmd')
-            tmdpath = fullfile(fpath,localfiles(i).name);
+        if ~isempty(sx) 
+            if strcmp(tempex,'.tmd')
+                tmdpath = fullfile(fpath,localfiles(i).name);
+            end
+            if ~isempty(strfind(localfiles(i).name,'_nrm.png'))
+                nrmpath = fullfile(fpath,localfiles(i).name);
+            end
         end
                     
     end
@@ -140,35 +156,50 @@ function sdata = add3dfiles(yamlpath, tag)
     if ~isempty(tmdfiles) && length(tmdpath) == 0
         tmdpath = tmdfiles(1).path;
     end
+    if ~isempty(nrmfiles) && length(nrmpath) == 0
+        nrmpath = nrmfiles(1).path;
+    end
         
-    if isempty(tmdpath) && ~isempty(tag)
-        warning('no TMD file found with tag = %s',tag);
+    % If the tag isn't empty, make sure we found either tmdpath or nrmpath
+    if ~isempty(tag) && isempty(nrmpath) && isempty(tmdpath)
+        warning('no TMD or normal map found with tag = %s',tag);
     end
         
     if numel(tmdfiles) == 1
         tmdpath = tmdfiles(1).path;
     end
+    if numel(nrmfiles) == 1
+        nrmpath = nrmfiles(1).path;
+    end
         
-    if numel(tmdfiles) > 1 && isempty(tag)
-        warning('%d TMD files found in %s, using first',numel(tmdfiles),scanfoldernm);
-        tmdpath = tmdfiles(1).path;
+    if isempty(tag)
+        if numel(tmdfiles) > 1 
+            warning('%d TMD files found in %s, using first',numel(tmdfiles),scanfoldernm);
+            tmdpath = tmdfiles(1).path;
+        end
+        if numel(nrmfiles) > 1 
+            warning('%d normal maps found in %s, using first',numel(nrmfiles),scanfoldernm);
+            nrmpath = nrmfiles(1).path;
+        end
     end
         
     % Check for normal maps with same names as TMD files
-    [tmdparent,tmdname,tmdext] = fileparts(tmdpath);
-    nrmpath = fullfile(tmdparent,[tmdname '_nrm.png']);
-    if ~exist(nrmpath,'file')
-        nrmpath = '';
-    end
-        
-    nrmfiles = [];
-    for tmdix = 1 : numel(tmdfiles)
-        [tmdparent,tmdname,tmdext] = fileparts(tmdfiles(tmdix).path);
-        localnrmpath = fullfile(tmdparent,[tmdname '_nrm.png']);
-        if ~exist(localnrmpath,'file')
-            localnrmpath = '';
-        end 
-        nrmfiles(tmdix).path = localnrmpath;
+    if ~isempty(tmdpath)
+        [tmdparent,tmdname,tmdext] = fileparts(tmdpath);
+        nrmpath = fullfile(tmdparent,[tmdname '_nrm.png']);
+        if ~exist(nrmpath,'file')
+            nrmpath = '';
+        end
+            
+        nrmfiles = [];
+        for tmdix = 1 : numel(tmdfiles)
+            [tmdparent,tmdname,tmdext] = fileparts(tmdfiles(tmdix).path);
+            localnrmpath = fullfile(tmdparent,[tmdname '_nrm.png']);
+            if ~exist(localnrmpath,'file')
+                localnrmpath = '';
+            end 
+            nrmfiles(tmdix).path = localnrmpath;
+        end
     end
         
     sdata.tmdpath  = tmdpath;
