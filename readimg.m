@@ -163,6 +163,10 @@ function [ff,lastline] = loadflatfield(fd)
     %scale: [0.507653710856, 0.502936759126, 0.487795945104, 0.497057198552, 0.487979214811, 0.502659764869]
     %size: 2464, 2056
 
+    % Newer versions of scan.yaml can have parentheses for sizes
+    %modelsize: (616, 514)
+    %size: (2464, 2056)
+
     ff.modelfile = '';
     ff.modelsize = [1 1];
     ff.nL        = 6;
@@ -193,13 +197,13 @@ function [ff,lastline] = loadflatfield(fd)
         if strcmp(key,'modelfile')
             ff.modelfile = value;
         elseif strcmp(key,'modelsize')
-            ff.modelsize = str2num(value);
+            ff.modelsize = str2num(regexprep(value,'[\(\)]',' '));
         elseif strcmp(key,'nL')
             ff.nL = str2num(value);
         elseif strcmp(key,'scale')
             ff.scale = str2num(value);
         elseif strcmp(key,'size')
-            ff.size = str2num(value);
+            ff.size = str2num(regexprep(value,'[\(\)]',' '));
         end
         
         line = fgetl(fd);
