@@ -25,13 +25,13 @@ function sdata = readscan(fpath)
     line = fgetl(fd);
     while ischar(line)
         % Find key
-        colonix = strfind(line,':');
+        colons = strfind(line,':');
         lastline = [];
-        if ~isempty(colonix)
-            key = line(1:colonix-1);
+        if length(colons) > 0
+            key = line(1:colons(1)-1);
             key = strtrim(key);
             
-            value = strtrim(line(colonix+1:end));
+            value = strtrim(line(colons(1)+1:end));
             if strcmp(key, 'version')
                 sdata.version = str2double(value);
             elseif strcmp(key,'iscalib')
@@ -145,13 +145,13 @@ function annotations = loadshapesasannotations(fpath)
 
         % Find key
 
-        colonix = strfind(line,':');
+        colons = strfind(line,':');
         lastline = [];
-        if ~isempty(colonix)
-            key = line(1:colonix-1);
+        if length(colons) > 0
+            key = line(1:colons(1)-1);
             key = strtrim(key);
             
-            value = strtrim(line(colonix+1:end));
+            value = strtrim(line(colons(1)+1:end));
             if strcmp(key, 'shapes')
                 [a,lastline] = loadannotations(fd);
                 annotations = a;
@@ -183,9 +183,9 @@ function [annotations,lastline] = loadannotations(fd)
         dashes = (line == '-');
         numbers = isstrprop(line,'digit');
         dashix = find(dashes(1:end-1) & ~numbers(2:end));
-        colonix = strfind(line,':');
+        colons = strfind(line,':');
         
-        if isempty(colonix)
+        if isempty(colons)
             line = fgetl(fd);
             continue;
         end
@@ -199,12 +199,12 @@ function [annotations,lastline] = loadannotations(fd)
         
         if ~isempty(dashix)
             ix = ix + 1;
-            key = strtrim(line(dashix+1 : colonix-1));
+            key = strtrim(line(dashix+1 : colons(1)-1));
         else
-            key = strtrim(line(1:colonix-1));
+            key = strtrim(line(1:colons(1)-1));
         end
         
-        value = strtrim(line(colonix+1:end));
+        value = strtrim(line(colons(1)+1:end));
 
         if strcmp(key,'type')
             annotations(ix).type = value;
@@ -260,9 +260,9 @@ function [tgt,lastline] = loadtarget(fd)
     lastline = line;
     ix = 1;
     while ischar(line)
-        colonix = strfind(line,':');
+        colons = strfind(line,':');
         
-        if isempty(colonix)
+        if isempty(colons)
             line = fgetl(fd);
             continue;
         end
@@ -274,9 +274,9 @@ function [tgt,lastline] = loadtarget(fd)
         end
         
         
-        key = strtrim(line(1:colonix-1));
+        key = strtrim(line(1:colons(1)-1));
         
-        value = strtrim(line(colonix+1:end));
+        value = strtrim(line(colons(1)+1:end));
 
         if strcmp(key,'type')
             tgt(ix).type = value;
@@ -301,9 +301,9 @@ function [tgt,lastline] = loaddevice(fd)
     lastline = line;
     ix = 1;
     while ischar(line)
-        colonix = strfind(line,':');
+        colons = strfind(line,':');
         
-        if isempty(colonix)
+        if isempty(colons)
             line = fgetl(fd);
             continue;
         end
@@ -315,8 +315,8 @@ function [tgt,lastline] = loaddevice(fd)
         end
         
         
-        key = strtrim(line(1:colonix-1));
-        value = strtrim(line(colonix+1:end));
+        key = strtrim(line(1:colons(1)-1));
+        value = strtrim(line(colons(1)+1:end));
 
         if strcmp(key,'devicetype')
             tgt(ix).devicetype = value;
@@ -348,9 +348,9 @@ function [cdata,lastline] = loadcamera(fd)
     cdata.shutter      = 0;
 
     while ischar(line)
-        colonix = strfind(line,':');
+        colons = strfind(line,':');
         
-        if isempty(colonix)
+        if isempty(colons)
             line = fgetl(fd);
             continue;
         end
@@ -361,8 +361,8 @@ function [cdata,lastline] = loadcamera(fd)
             return;
         end
         
-        key = strtrim(line(1:colonix-1));
-        value = strtrim(line(colonix+1:end));
+        key = strtrim(line(1:colons(1)-1));
+        value = strtrim(line(colons(1)+1:end));
 
         if strcmp(key,'cameraid')
             cdata.cameraid = value;
@@ -392,8 +392,6 @@ function [st,lastline,lines] = ignorestruct(fd)
     lastline = line;
     ix = 1;
     while ischar(line)
-        dashix = strfind(line,'-');
-        colonix = strfind(line,':');
     
         % Count leading whitespace
         whiteix = min(find(isspace(line) == 0));
