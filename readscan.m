@@ -178,6 +178,7 @@ function [annotations,lastline] = loadannotations(fd)
     line = fgetl(fd);
     lastline = line;
     ix = 0;
+    annotations = [];
     while ischar(line)
         % Find dashes not associated with numbers
         dashes = (line == '-');
@@ -191,7 +192,7 @@ function [annotations,lastline] = loadannotations(fd)
         end
         % Count leading whitespace
         whiteix = min(find(isspace(line) == 0));
-        if whiteix == 1
+        if whiteix == 1 && isempty(dashix) % YAML list can start with a dash and no leading whitespace
             lastline = line;
             return;
         end

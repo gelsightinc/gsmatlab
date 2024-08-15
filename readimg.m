@@ -104,9 +104,10 @@ function ff = flatfieldmodel(fpath)
     line = fgetl(fd);
     while ischar(line)
         % Find key
-        colonix = strfind(line,':');
+        colons = strfind(line,':');
         lastline = [];
-        if ~isempty(colonix)
+        if ~isempty(colons)
+            colonix = colons(1);
             key = line(1:colonix-1);
             key = strtrim(key);
             
@@ -177,9 +178,9 @@ function [ff,lastline] = loadflatfield(fd)
     lastline = line;
     ix = 1;
     while ischar(line)
-        colonix = strfind(line,':');
+        colons = strfind(line,':');
         
-        if isempty(colonix)
+        if isempty(colons)
             line = fgetl(fd);
             continue;
         end
@@ -189,6 +190,8 @@ function [ff,lastline] = loadflatfield(fd)
             lastline = line;
             return;
         end
+
+        colonix = colons(1);
         
         key = strtrim(line(1:colonix-1));
         
