@@ -184,7 +184,7 @@ function annotations = loadshapesasannotations(fpath)
         end
     end
     
-    fclose(fd)
+    fclose(fd);
     
 end
 
