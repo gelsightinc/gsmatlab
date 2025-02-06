@@ -50,6 +50,13 @@ function scans = findscans(spath, scannm, tag)
         st = strfind(localfiles(i).name,scannm);
 
         scanpath = fullfile(localpath,'scan.yaml');
+
+        % If stitch.yaml exists, treat stitched scan as a scan
+        stitchpath = fullfile(localpath,'stitch.yaml');
+        if exist(stitchpath,'file')
+            scanpath = stitchpath;
+        end
+
         % if the scannm is empty, then we save the scan
         % otherwise, we only save scans that match scannm
         if exist(scanpath,'file') && (isempty(scannm) || ~isempty(st))
