@@ -21,6 +21,9 @@ function sdata = readscan(fpath)
     end
     
     fd = fopen(fpath,'r');
+
+    % Get enclosing folder path
+    [scandr,scanfile,scanext] = fileparts(fpath);
     
     line = fgetl(fd);
     while ischar(line)
@@ -70,8 +73,23 @@ function sdata = readscan(fpath)
                 [s,lastline] = loadtarget(fd);
                 sdata.target = s;
                 if strcmp(lower(s.type),'bga')
-                    sdata.calibradius = s.radius;
-                    sdata.calibspacing = s.pitch;
+                    % Look for bgatarget.yaml
+                    bgayaml = fullfile(scandr, 'bgatarget.yaml');
+                    if exist(bgayaml,'file')
+                        s = readtarget(bgayaml);
+                    end
+
+                    if isfield(s,'radius')
+                        sdata.calibradius  = s.radius;
+                    elseif isfield(s,'calibradius')
+                        sdata.calibradius  = s.calibradius;
+                    end
+                    if isfield(s,'pitch')
+                        sdata.calibspacing = s.pitch;
+                    elseif isfield(s,'calibspacing')
+                        sdata.calibspacing = s.calibspacing;
+                    end
+                    sdata.annotations  = s.annotations;
                 end
             end
             
@@ -96,7 +114,7 @@ function sdata = readscan(fpath)
     end
 
     if sdata.version >= 2
-        [scandr,scanfile,scanext] = fileparts(fpath);
+
         scancontext = fullfile(scandr, 'Analysis/scancontext.yaml');
         if exist(scancontext, 'file')
             sdata.annotations = loadshapesasannotations(scancontext);
@@ -166,7 +184,7 @@ function annotations = loadshapesasannotations(fpath)
         end
     end
     
-    fclose(fd);
+    fclose(fd)
     
 end
 

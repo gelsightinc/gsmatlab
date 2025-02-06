@@ -33,6 +33,20 @@ function sdata = readtarget(fpath)
             elseif strcmp(key,'shapes')
                 [a,lastline] = loadannotations(fd);
                 sdata.annotations = a;
+            elseif strcmp(key,'depth')
+                s.depth = str2num(value);
+            elseif strcmp(key,'width')
+                s.width = str2num(value);
+            elseif strcmp(key,'distance')
+                s.distance = str2num(value);
+            elseif strcmp(key,'diameter')
+                s.diameter = str2num(value);
+            elseif strcmp(key,'pad')
+                s.pad = str2num(value);
+            elseif strcmp(key, 'circles')
+                s.circles = 0;
+            elseif strcmp(key, 'line')
+                s.line = 0;
             end
             
         end
@@ -67,17 +81,35 @@ function [annotations,lastline] = loadannotations(fd)
         dashix = find(dashes(1:end-1) & ~numbers(2:end));
         colonix = strfind(line,':');
         
+        % Try to parse line as a tuple for circles
         if isempty(colonix)
+            val = strtrim(line(dashix+1:end));
+            expr = '\((?<x>-?[\.0-9]+)\s*,\s*(?<y>-?[\.0-9]+)\s*,\s*(?<r>-?[.0-9]+)\)';
+            m = regexp(val, expr,'names');
+
+            if ~isempty(m)
+                ix = ix + 1;
+                annotations(ix).type = 'Circle';
+                annotations(ix).x = str2num(m.x)+1;  % Add 1 for MATLAB coordinates
+                annotations(ix).y = str2num(m.y)+1;
+                annotations(ix).r = str2num(m.r);
+
+            end
             line = fgetl(fd);
             continue;
         end
+
         % Count leading whitespace
         whiteix = min(find(isspace(line) == 0));
         if whiteix == 1
             lastline = line;
             return;
         end
+
+        if isempty(colonix)
+            keyboard
         
+        end
         
         if ~isempty(dashix)
             ix = ix + 1;
