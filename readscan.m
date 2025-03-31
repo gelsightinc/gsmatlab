@@ -49,6 +49,8 @@ function sdata = readscan(fpath)
             elseif strcmp(key,'calibspacing')
                 sdata.calibspacing = str2num(value);
             elseif strcmp(key,'crop')
+                % Remove parens
+                value = strrep(strrep(value,'(',' '),')',' ');
                 sdata.crop = str2num(value)+1;
             elseif strcmp(key,'guid')
                 sdata.guid = value;
