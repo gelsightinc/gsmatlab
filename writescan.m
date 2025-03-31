@@ -16,21 +16,27 @@ function writescan(sdata, outname)
 %   See also readscan
 
     fd = fopen(outname,'w');
+    writefield(fd, sdata, 'version', 'double');
     writefield(fd, sdata, 'iscalib', 'logical');
     
     fprintf(fd,'images:\n');
     for i = 1 : numel(sdata.images)
         fprintf(fd, '  - %s\n',sdata.images(i).name);
     end
+    writefield(fd, sdata, 'guid', 'plainstring');
     fields = {'calibradius', 'calibspacing', 'mmperpixel'};
     for i = 1 : numel(fields)
         writefield(fd, sdata, fields{i}, 'double');
     end
+
     writefield(fd, sdata, 'calib', 'string');
     
     if isfield(sdata,'crop')
         fprintf(fd,'crop: [%d, %d, %d, %d]\n',sdata.crop-1);
     end
+    writefield(fd, sdata, 'aligned', 'bool');
+    writefield(fd, sdata, 'createdon', 'plainstring');
+    writefield(fd, sdata, 'sdkversion', 'plainstring');
       
     if isfield(sdata,'stage')
         fprintf(fd,'stage:\n');
@@ -59,6 +65,45 @@ function writescan(sdata, outname)
         writevector(fd, A(:));
         fprintf(fd,'\n');
     end
+
+    if isfield(sdata,'camera')
+        fprintf(fd,'camera:\n');
+        fields = {'cameraid','cameratype','gelid'};
+        for i = 1 : numel(fields)
+            writefield(fd, sdata.camera, fields{i}, 'plainstring', true);
+        end
+        fields = {'lensfocuspos','shutter'};
+        for i = 1 : numel(fields)
+            writefield(fd, sdata.camera, fields{i}, 'double', true);
+        end
+    end
+
+    if isfield(sdata,'device')
+        fprintf(fd,'device:\n');
+        fields = {'deviceconfigid','devicefirmware'};
+        for i = 1 : numel(fields)
+            writefield(fd, sdata.device, fields{i}, 'int', true);
+        end
+        writefield(fd, sdata.device, 'devicemodel', 'plainstring', true);
+        writefield(fd, sdata.device, 'devicetemp', 'double', true);
+        fields = {'devicetype','serialnumber'};
+        for i = 1 : numel(fields)
+            writefield(fd, sdata.device, fields{i}, 'plainstring', true);
+        end
+    end
+
+    if isfield(sdata,'metadata')
+        fprintf(fd,'metadata:\n');
+        fields = {'appname','appversion','gelid'};
+        for i = 1 : numel(fields)
+            writefield(fd, sdata.metadata, fields{i}, 'plainstring', true);
+        end
+        writefield(fd, sdata.metadata, 'gelusecount', 'int', true);
+        fields = {'sdkversion','username'};
+        for i = 1 : numel(fields)
+            writefield(fd, sdata.metadata, fields{i}, 'plainstring', true);
+        end
+    end
     
     
     fclose(fd);
@@ -68,18 +113,32 @@ end
 %
 %
 %
-function writefield(fd, sdata, fieldnm, ftype)
+function writefield(fd, sdata, fieldnm, ftype, indent)
 
     if ~isfield(sdata,fieldnm)
         return;
     end
+    if ~exist('indent','var')
+        indent = false;
+    end
+    if indent
+        fprintf(fd,'    ');
+    end
     
     if strcmp(ftype,'logical')
         fprintf(fd,'%s: %d\n',fieldnm,sdata.(fieldnm));
+    elseif strcmp(ftype,'bool')
+        tf = 'false';
+        if sdata.(fieldnm)
+            tf = 'true';
+        end
+        fprintf(fd,'%s: %s\n',fieldnm,tf);
     elseif strcmp(ftype,'double')
         fprintf(fd,'%s: %.9f\n',fieldnm,sdata.(fieldnm));
     elseif strcmp(ftype,'string')
         fprintf(fd,'%s: "%s"\n',fieldnm,sdata.(fieldnm));
+    elseif strcmp(ftype,'plainstring')
+        fprintf(fd,'%s: %s\n',fieldnm,sdata.(fieldnm));
     elseif strcmp(ftype,'int')
         fprintf(fd,'%s: %d\n',fieldnm,sdata.(fieldnm));
     end

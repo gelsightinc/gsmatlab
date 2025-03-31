@@ -52,8 +52,14 @@ function sdata = readscan(fpath)
                 sdata.crop = str2num(value)+1;
             elseif strcmp(key,'guid')
                 sdata.guid = value;
+            elseif strcmp(key,'aligned')
+                sdata.aligned = str2num(value);
             elseif strcmp(key,'mmperpixel')
                 sdata.mmperpixel = str2num(value);
+            elseif strcmp(key,'createdon')
+                sdata.createdon = value;
+            elseif strcmp(key,'sdkversion')
+                sdata.sdkversion = value;
             elseif strcmp(key,'annotations')
                 [a,lastline] = loadannotations(fd);
                 sdata.annotations = a;
@@ -69,6 +75,9 @@ function sdata = readscan(fpath)
             elseif strcmp(key,'device')
                 [a,lastline] = loaddevice(fd);
                 sdata.device = a;
+            elseif strcmp(key,'metadata')
+                [a,lastline] = loadmetadata(fd);
+                sdata.metadata = a;
             elseif strcmp(key,'target')
                 [s,lastline] = loadtarget(fd);
                 sdata.target = s;
@@ -341,8 +350,60 @@ function [tgt,lastline] = loaddevice(fd)
             tgt(ix).devicetype = value;
         elseif strcmp(key,'devicetemp')
             tgt(ix).devicetemp = str2num(value);
+        elseif strcmp(key,'deviceconfigid')
+            tgt(ix).deviceconfigid = str2num(value);
+        elseif strcmp(key,'devicefirmware')
+            tgt(ix).devicefirmware = str2num(value);
+        elseif strcmp(key,'devicemodel')
+            tgt(ix).devicemodel = value;
         elseif strcmp(key,'serialnumber')
             tgt(ix).serialnumber = value;
+        end
+        %fprintf('%s : %s\n',key,value);
+        
+        line = fgetl(fd);
+    end
+
+end
+
+%
+% Load the metadata block
+%
+function [tgt,lastline] = loadmetadata(fd)
+    
+    line = fgetl(fd);
+    lastline = line;
+    ix = 1;
+    while ischar(line)
+        colons = strfind(line,':');
+        
+        if isempty(colons)
+            line = fgetl(fd);
+            continue;
+        end
+        % Count leading whitespace
+        whiteix = min(find(isspace(line) == 0));
+        if whiteix == 1
+            lastline = line;
+            return;
+        end
+        
+        
+        key = strtrim(line(1:colons(1)-1));
+        value = strtrim(line(colons(1)+1:end));
+
+        if strcmp(key,'appname')
+            tgt(ix).appname = value;
+        elseif strcmp(key,'appversion')
+            tgt(ix).appversion = value;
+        elseif strcmp(key,'gelid')
+            tgt(ix).gelid = value;
+        elseif strcmp(key,'gelusecount')
+            tgt(ix).gelusecount = str2num(value);
+        elseif strcmp(key,'sdkversion')
+            tgt(ix).sdkversion = value;
+        elseif strcmp(key,'username')
+            tgt(ix).username = value;
         end
         %fprintf('%s : %s\n',key,value);
         
