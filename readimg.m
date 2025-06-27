@@ -61,13 +61,22 @@ function [imout,ff] = readimg(fpath, ch, varargin)
         xdim = info.Width;
 
         imout = zeros(ydim,xdim,numel(channels));
+
         for i = 1 : numel(channels)
             cx = channels(i);
             img = im2double(imread(sdata.images(cx).path));
 
-            if doflat && isfield(sdata,'calib') && exist(sdata.calib,'file')
+            if doflat && isfield(sdata,'calib') 
+                cpath = sdata.calib;
+                if ~exist(cpath,'file')
+                    [pdir,filenm,fext] = fileparts(fpath);
+                    cpath = fullfile(pdir,sdata.calib);
+                end
+                if ~exist(cpath,'file')
+                    warning('cannot find calibration file');
+                end
                 if isempty(ff)
-                    ff = flatfieldmodel(sdata.calib);
+                    ff = flatfieldmodel(cpath);
 
                     if ~isfield(ff,'correction')
                         ff.correction = loadcmap(ff);

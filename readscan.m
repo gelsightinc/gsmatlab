@@ -43,6 +43,8 @@ function sdata = readscan(fpath)
                 [impaths,lastline] = loadimages(fd, fpath);
                 sdata.images = impaths;
             elseif strcmp(key,'calib')
+                % Remove quotes
+                value = strtrim(strrep(value,'"',' '));
                 sdata.calib = findcalib(fpath, value);
             elseif strcmp(key,'calibradius')
                 sdata.calibradius = str2num(value);
