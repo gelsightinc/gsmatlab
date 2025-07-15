@@ -27,26 +27,60 @@ function sdata = readtarget(fpath)
             if strcmp(key,'type')
                 sdata.type = value;
             elseif strcmp(key,'radius')
-                sdata.calibradius = str2num(value);
+                sdata.radius = str2num(value);
             elseif strcmp(key,'pitch')
-                sdata.calibspacing = str2num(value);
+                sdata.pitch = str2num(value);
             elseif strcmp(key,'shapes')
                 [a,lastline] = loadannotations(fd);
-                sdata.annotations = a;
+                sdata.shapes = a;
             elseif strcmp(key,'depth')
-                s.depth = str2num(value);
+                sdata.depth = str2num(value);
             elseif strcmp(key,'width')
-                s.width = str2num(value);
+                sdata.width = str2num(value);
             elseif strcmp(key,'distance')
-                s.distance = str2num(value);
+                sdata.distance = str2num(value);
             elseif strcmp(key,'diameter')
-                s.diameter = str2num(value);
+                sdata.diameter = str2num(value);
             elseif strcmp(key,'pad')
-                s.pad = str2num(value);
+                sdata.pad = str2num(value);
             elseif strcmp(key, 'circles')
-                s.circles = 0;
+                if isempty(value)
+                    [cc,lastline] = loadannotations(fd);
+                else
+                    % Parse inline shapes
+                    cexpr = "\(\s*(?<x>[-\d\.eE]+)\s*,\s*(?<y>[-\d\.eE]+)\s*,\s*(?<r>[-\d\.eE]+)\s*\)";
+
+                    m = regexp(value,cexpr,'names');
+                    if numel(m) ~= 2
+                        error('failed to match two circles')
+                    end
+                    for i = 1 : 2
+                        cc(i).type = 'Circle';
+                        cc(i).x    = str2num(m(i).x)+1;
+                        cc(i).y    = str2num(m(i).y)+1;
+                        cc(i).r    = str2num(m(i).r);
+                    end
+                end
+                sdata.circles = cc;
             elseif strcmp(key, 'line')
-                s.line = 0;
+                % If value is empty, look for list of shpaes
+                if isempty(value)
+                    [a,lastline] = loadannotations(fd);
+                else
+                    % Parse inline shape
+                    expr = '\((?<x1>[-\d\.eE]+)\s*,\s*(?<y1>[-\d\.eE]+)\s*,\s*(?<x2>[-\d\.eE]+)\s*,\s*(?<y2>[-\d\.eE]+)\)';
+                    m = regexp(value,expr,'names');
+                    if isempty(m)
+                        error('unable to parse line field');
+                    end
+                    a.type = 'Line';
+                    % Add 1 for MATLAB coordinates
+                    a.x1 = str2num(m.x1)+1;
+                    a.x2 = str2num(m.x2)+1;
+                    a.y1 = str2num(m.y1)+1;
+                    a.y2 = str2num(m.y2)+1;
+                end
+                sdata.line = a;
             end
             
         end
@@ -81,19 +115,32 @@ function [annotations,lastline] = loadannotations(fd)
         dashix = find(dashes(1:end-1) & ~numbers(2:end));
         colonix = strfind(line,':');
         
-        % Try to parse line as a tuple for circles
+        % Try to parse line as a tuple for lines or circles
         if isempty(colonix)
             val = strtrim(line(dashix+1:end));
-            expr = '\((?<x>-?[\.0-9]+)\s*,\s*(?<y>-?[\.0-9]+)\s*,\s*(?<r>-?[.0-9]+)\)';
-            m = regexp(val, expr,'names');
+            % Match a circle
+            cexpr = '\((?<x>-?[-\d\.eE]+)\s*,\s*(?<y>-?[-\d\.eE]+)\s*,\s*(?<r>-?[-\d\.eE]+)\)';
+            matchcirc = regexp(val, cexpr,'names');
 
-            if ~isempty(m)
+            % Match a line
+            lexpr = '\((?<x1>-?[-\d\.eE]+)\s*,\s*(?<y1>-?[-\d\.eE]+)\s*,\s*(?<x2>-?[-\d\.eE]+)\s*,\s*(?<y2>[-\d\.eE]+)\)';
+            matchline = regexp(val, lexpr,'names');
+
+            if ~isempty(matchcirc)
                 ix = ix + 1;
                 annotations(ix).type = 'Circle';
-                annotations(ix).x = str2num(m.x)+1;  % Add 1 for MATLAB coordinates
-                annotations(ix).y = str2num(m.y)+1;
-                annotations(ix).r = str2num(m.r);
+                annotations(ix).x = str2num(matchcirc.x)+1;  % Add 1 for MATLAB coordinates
+                annotations(ix).y = str2num(matchcirc.y)+1;
+                annotations(ix).r = str2num(matchcirc.r);
 
+            elseif ~isempty(matchline)
+                ix = ix + 1;
+                annotations(ix).type = 'Line';
+                annotations(ix).x1 = str2num(matchline.x1)+1;  % Add 1 for MATLAB coordinates
+                annotations(ix).y1 = str2num(matchline.y1)+1;
+
+                annotations(ix).x2 = str2num(matchline.x2)+1;  % Add 1 for MATLAB coordinates
+                annotations(ix).y2 = str2num(matchline.y2)+1;
             end
             line = fgetl(fd);
             continue;
@@ -328,7 +375,7 @@ end
 function pts = parsePointList(list)
 
     points = strrep(strrep(list, '[',''),']','');
-    pat = '(?<x>\d+\.?\d*)\s*,\s*(?<y>\d+\.?\d*)';
+    pat = '(?<x>[-\d\.eE]+)\s*,\s*(?<y>[-\d\.eE]+)';
 
     matches = regexp(points, pat, 'names');
     for i = 1 : numel(matches)
