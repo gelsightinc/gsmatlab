@@ -102,7 +102,11 @@ function sdata = readscan(fpath)
                     elseif isfield(s,'calibspacing')
                         sdata.calibspacing = s.calibspacing;
                     end
-                    sdata.annotations  = s.annotations;
+                    if isfield(s,'shapes')
+                        sdata.annotations  = s.shapes;
+                    elseif isfield(s, 'annotations')
+                        sdata.annotations  = s.annotations;
+                    end
                 end
             end
             
