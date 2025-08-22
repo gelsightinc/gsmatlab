@@ -151,11 +151,12 @@ function [impaths,lastline] = loadimages(fd, scanpath)
     ix = 1;
     while ischar(line)
         % Lists must have dash then space
-        dashix = strfind(line,'- ');
-        if isempty(dashix)
+        matches = regexp(line,'^\s*-\s','once');
+        if isempty(matches)
             lastline = line;
             return;
         end
+        dashix = matches(1);
         
         name = strtrim(line(dashix+1:end));
         impaths(ix).path = fullfile(parentdr,name);
