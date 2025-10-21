@@ -151,7 +151,8 @@ function [impaths,lastline] = loadimages(fd, scanpath)
     ix = 1;
     while ischar(line)
         % Lists must have dash then space
-        matches = regexp(line,'^\s*-\s','once');
+        % Use lookbehind to exclude leading spaces from match
+        matches = regexp(line,'(?<=^\s*)-\s','once');
         if isempty(matches)
             lastline = line;
             return;
