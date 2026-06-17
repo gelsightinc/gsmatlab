@@ -1,0 +1,10 @@
+iscalib: false
+images:
+  - IMG_0001.png
+  - IMG_0002.png
+mmperpixel: 0.003448275862068966
+metadata:
+  []
+camera:
+  cameratype: Canon EDSDK
+  shutter_str: 1"6

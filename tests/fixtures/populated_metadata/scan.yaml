@@ -1,0 +1,13 @@
+iscalib: false
+images:
+  - IMG_0001.png
+mmperpixel: 0.003448275862068966
+metadata:
+  appname: GelSight Scan
+  appversion: 2.1.0
+  gelid: GEL-12345
+  gelusecount: 7
+  sdkversion: 5.0.1
+  username: kimo
+camera:
+  cameratype: Canon EDSDK

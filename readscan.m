@@ -380,7 +380,12 @@ end
 % Load the metadata block
 %
 function [tgt,lastline] = loadmetadata(fd)
-    
+
+    % Initialize so the output is always assigned. Legacy scan files write an
+    % empty metadata block as a "[]" list, in which case no key:value pairs are
+    % found below and the loop returns without ever setting tgt.
+    tgt = [];
+
     line = fgetl(fd);
     lastline = line;
     ix = 1;
